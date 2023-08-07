@@ -39,7 +39,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun addListener(){
         //개발자 용
-        //TODO 제거 or BuildConig 에서 Dubug 애서만 쓸수 있게 , GIT ISSUE 사용하기 , 혹은 시크릿 창을 만들어 아이디 비번 직접 칠수 있도록
         binding.icIcon.setOnClickListener {
             if(!BuildConfig.DEBUG){
                 binding.editId.setText("sonny132@naver.com")
@@ -49,23 +48,23 @@ class LoginActivity : AppCompatActivity() {
 
         //로그인 LiveData
         //Resour
-        viewModel.loginLiveData.observe(this , Observer {
-            when(it.status){
-                LoginViewModel.LoginStatus.LoadingStatus.LOADING ->{
+        viewModel.loginLiveData.observe(this , Observer {loginStatus ->
+            when(loginStatus) {
+                is LoginViewModel.LoginStatus.LoginLoading->{
                     Timber.d("Loading for Login")
                     Toast.makeText(this , getString(R.string.msg_login_loading), Toast.LENGTH_SHORT ).show()
                 }
-                LoginViewModel.LoginStatus.LoadingStatus.SUCCESS ->{
+
+                is LoginViewModel.LoginStatus.LoginSuccess ->{
                     Timber.d("Success for Login")
                     Toast.makeText(this , getString(R.string.msg_success_login), Toast.LENGTH_SHORT ).show()
-
                 }
-                LoginViewModel.LoginStatus.LoadingStatus.ERROR ->{
+                is LoginViewModel.LoginStatus.LoginError ->{
                     Timber.e("ERROR to Login")
-
                 }
             }
         })
+
         //로그인시 회원정보가 있는지 판별
         binding.btnLogin.setOnClickListener {
             val id = binding.editId.text.toString().replace(" ","").replace(".","")
