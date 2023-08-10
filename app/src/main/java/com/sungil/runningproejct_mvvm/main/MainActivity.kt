@@ -2,6 +2,7 @@ package com.sungil.runningproejct_mvvm.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,15 +20,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
 
-    private var _viewModel : MainViewModel ?= null
-    private val viewModel get() = _viewModel!!
+    private val viewModel : MainViewModel by viewModels{MainViewModelFactory()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
-        initViewModel()
         addListener()
     }
 
@@ -38,10 +37,6 @@ class MainActivity : AppCompatActivity() {
         binding.txtOtherSns.setTextColor(getColor(R.color.gray))
     }
 
-    private fun initViewModel() {
-        val factory = MainViewModelFactory()
-        _viewModel = ViewModelProvider(this , factory)[MainViewModel :: class.java]
-    }
     private fun addListener(){
         viewModel.wearLiveData.observe(this , Observer {
             val data = it ?: return@Observer
