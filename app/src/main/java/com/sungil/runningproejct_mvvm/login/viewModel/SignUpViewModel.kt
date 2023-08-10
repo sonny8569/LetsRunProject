@@ -42,10 +42,6 @@ class SignUpViewModel (private val repository: LoginRepository , private val con
     //회원가입 요청
     private fun requestSignUp()  {
         _signUpLiveData.value = SignUpStatus.SignUpLoading
-        if(userInfo == null){
-            _signUpLiveData.value = SignUpStatus.SignUpError(context.getString(R.string.msg_error_app))
-            return
-        }
         viewModelScope.launch (Dispatchers.IO){
             repository.requestSignUp(userInfo!! , this@SignUpViewModel)
         }

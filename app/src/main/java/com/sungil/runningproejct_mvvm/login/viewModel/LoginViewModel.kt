@@ -16,12 +16,10 @@ import kotlinx.coroutines.launch
  * Login viewModel
  */
 class LoginViewModel(private val repository: LoginRepository) : ViewModel(), RepositoryListener {
-    //LiveData 여러개 쓰던가
-    //LiveData 하나만?->
     private var _loginLiveData = MutableLiveData<LoginStatus>()
     val loginLiveData get() = _loginLiveData
 
-    //로그인 요청
+    //이전 함수 시작할때부터 코루틴 -> 이제 Repository 들어갈떄만 코루틴
     fun requestLogin(data: LoginData){
         _loginLiveData.value = LoginStatus.LoginLoading
         viewModelScope.launch (Dispatchers.IO){
@@ -43,7 +41,7 @@ class LoginViewModel(private val repository: LoginRepository) : ViewModel(), Rep
     override fun onMessageFail(data: ListenerMessage) {
         _loginLiveData.value = LoginStatus.LoginError(data.message)
     }
-
+    //data class Resource -> sealed class 로 변경
     sealed class LoginStatus {
         data class LoginSuccess(val data : String) : LoginStatus()
         data class LoginError(val message : String) : LoginStatus()

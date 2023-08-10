@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
 
-//Firebase 에 보내고 받을 회원정보 ( 회원가입시 에만)
+//기본 init 변수 추가
 
 @Entity(
     tableName = AppDatabase.USERINFO_TABLE

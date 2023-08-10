@@ -85,5 +85,10 @@ dependencies {
     implementation "androidx.room:room-ktx:$roomDatabase"
     implementation "androidx.room:room-paging:$roomDatabase"
 
+    //viewModel
+    implementation "androidx.activity:activity-ktx:$activity_ktx"
+    implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
 
 }

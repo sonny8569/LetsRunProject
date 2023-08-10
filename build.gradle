@@ -15,4 +15,7 @@ ext {
     guava  = '32.0.1-jre'
     concurrent = '1.1.0'
     roomDatabase = '2.5.2'
+    lifecycle_version = "2.6.1"
+    activity_ktx = "1.7.2"
+    fragment_ktx = "1.6.1"
 }

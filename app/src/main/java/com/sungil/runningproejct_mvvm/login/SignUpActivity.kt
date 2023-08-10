@@ -3,16 +3,16 @@ package com.sungil.runningproejct_mvvm.login
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.BuildConfig
+import com.sungil.runningproejct_mvvm.MainApplication
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivitySignUpBinding
 import com.sungil.runningproejct_mvvm.login.factory.SignUpFactory
 import com.sungil.runningproejct_mvvm.login.viewModel.SignUpViewModel
 import com.sungil.runningproejct_mvvm.`object`.UserInfo
-import com.sungil.runningproejct_mvvm.repository.loginImpl.LoginRepoImpl
 import timber.log.Timber
 
 /**
@@ -22,27 +22,15 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivitySignUpBinding
 
-    private var _viewModel : SignUpViewModel ?= null
-    //
-    private val viewModel get() = _viewModel!!
-
-//    private val repository = LoginRepoImpl()
-
+    private val viewModel : SignUpViewModel by viewModels{SignUpFactory(MainApplication.appContext) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initViewModel()
-        addListener()
+        observer()
     }
 
-    //viewModel init
-    private fun initViewModel(){
-        val factory = SignUpFactory(LoginRepoImpl(this), this )
-        _viewModel = ViewModelProvider(this  , factory)[SignUpViewModel :: class.java]
-    }
-
-    private fun addListener(){
+    private fun observer(){
         //종복회원인지 확인 LiveData
         viewModel.signUpCheckLiveData.observe(this  , Observer {signUpCheck ->
             when(signUpCheck){
@@ -89,10 +77,10 @@ class SignUpActivity : AppCompatActivity() {
 
         //회원정보 입력을 확실히 했는지 체크 -> 중복회원 검사
         binding.btnLogin.setOnClickListener {
-            val id = binding.editId.text.toString().replace(" ","").replace(".","")
-            val password = binding.editPassword.text.toString().replace(" ", "")
-            val nickName = binding.editNickName.text.toString().replace(" ", "")
-            val phoneNumber = binding.editPhoneNumber.text.toString().replace(" ","")
+            val id = binding.editId.text.toString().trim().replace(".","")
+            val password = binding.editPassword.text.toString().trim()
+            val nickName = binding.editNickName.text.toString().trim()
+            val phoneNumber = binding.editPhoneNumber.text.toString().trim()
             if(id == "" || password ==""||nickName ==""||phoneNumber ==""){
                 Timber.e("The UserInfo is Null")
                 Toast.makeText(this , getString(R.string.msg_pls_input_userinfo) , Toast.LENGTH_SHORT).show()
@@ -110,6 +98,5 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        _viewModel = null
     }
 }
