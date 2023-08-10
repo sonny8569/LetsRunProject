@@ -11,6 +11,8 @@ import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
     entities = [WearRunDataDBM :: class , UserInfo :: class],
     version = 1
 )
+
+//appDatabase 추가
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun wearRunningDao() :  RunningDao
