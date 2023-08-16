@@ -10,21 +10,20 @@ import com.google.firebase.BuildConfig
 import com.sungil.runningproejct_mvvm.MainApplication
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityLoginBinding
+import com.sungil.runningproejct_mvvm.login.factory.LoginFactory
 import com.sungil.runningproejct_mvvm.login.viewModel.LoginViewModel
 import com.sungil.runningproejct_mvvm.main.MainActivity
 import com.sungil.runningproejct_mvvm.`object`.LoginData
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 /**
  * 로그인 화묜
  */
-@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var  binding : ActivityLoginBinding
 
-    private val viewModel : LoginViewModel by viewModels()
+    private val viewModel : LoginViewModel by viewModels{LoginFactory(MainApplication.appContext)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)

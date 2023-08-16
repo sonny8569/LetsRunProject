@@ -7,22 +7,22 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.firebase.BuildConfig
+import com.sungil.runningproejct_mvvm.MainApplication
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivitySignUpBinding
+import com.sungil.runningproejct_mvvm.login.factory.SignUpFactory
 import com.sungil.runningproejct_mvvm.login.viewModel.SignUpViewModel
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
-import dagger.hilt.android.AndroidEntryPoint
+import com.sungil.runningproejct_mvvm.`object`.UserInfo
 import timber.log.Timber
 
 /**
  * 회원가입 Activity
  */
-@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivitySignUpBinding
 
-    private val viewModel : SignUpViewModel by viewModels()
+    private val viewModel : SignUpViewModel by viewModels{SignUpFactory(MainApplication.appContext) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -86,7 +86,7 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this , getString(R.string.msg_pls_input_userinfo) , Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val data = UserInfoDBM(id, password, phoneNumber, nickName)
+            val data = UserInfo(id, password, phoneNumber, nickName)
             viewModel.checkAlreadySignUp(data)
         }
 

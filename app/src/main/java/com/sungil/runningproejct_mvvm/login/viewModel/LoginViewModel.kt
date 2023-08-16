@@ -4,21 +4,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.`object`.LoginData
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.`object`.UserInfo
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Login viewModel
  */
-@HiltViewModel
-class LoginViewModel @Inject constructor (private val repository: LoginRepository) : ViewModel(), RepositoryListener {
+class LoginViewModel(private val repository: LoginRepository) : ViewModel(), RepositoryListener {
     private var _loginLiveData = MutableLiveData<LoginStatus>()
     val loginLiveData get() = _loginLiveData
 
@@ -34,7 +31,7 @@ class LoginViewModel @Inject constructor (private val repository: LoginRepositor
     override fun onMessageSuccess(data: ListenerMessage) {
         when(data.message){
             Define.PROP_SAVE_USERINFO ->{
-                val userInfo = data.data as UserInfoDBM
+                val userInfo = data.data as UserInfo
                 repository.saveUserInfo(userInfo , this )
             }
             else -> _loginLiveData.setValue(LoginStatus.LoginSuccess(data.message))

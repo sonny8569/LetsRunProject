@@ -5,7 +5,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id("com.google.gms.google-services")
     id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -17,7 +16,7 @@ android {
         minSdk 30
         targetSdk 33
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -91,11 +90,5 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-}
-
-kapt {
-    correctErrorTypes = true
 }

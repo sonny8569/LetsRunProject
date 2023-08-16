@@ -10,7 +10,7 @@ import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
 @Entity(
     tableName = AppDatabase.USERINFO_TABLE
 )
-class UserInfoDBM(
+class UserInfo(
     @PrimaryKey val id : String = "" ,
     @ColumnInfo val password : String = "",
     @ColumnInfo val phoneNumber : String = "",

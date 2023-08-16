@@ -9,33 +9,31 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
+import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
 import com.sungil.runningproejct_mvvm.`object`.LoginData
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.`object`.UserInfo
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.Exception
 
 
 /**
  * 로그인 및 회원가입 Repositorty 구현체
  */
-class LoginRepoImpl @Inject constructor(private val context : Context,  private val userInfoDao: UserInfoDao ) : LoginRepository {
+class LoginRepoImpl (context : Context) : LoginRepository {
 
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
     private val userInfoURL = Define.FIREBASE_USERINFO_URL
     private val loginImplContext = context
-    private var userInfo : UserInfoDao = userInfoDao
-    override suspend fun requestCheckUserInfo(data: UserInfoDBM, Listener : RepositoryListener)  {
+    override suspend fun requestCheckUserInfo(data: UserInfo , Listener : RepositoryListener)  {
         val myUserInfoUrl = userInfoURL+"/"+data.id
 
         database.getReference(myUserInfoUrl).addListenerForSingleValueEvent(object  : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.getValue<UserInfoDBM>()
+                val value = snapshot.getValue<UserInfo>()
                 if(value == null){
                     Timber.e("The User Data is Null")
 //                    Listener.onMessageSuccess(ListenerMessage(data , Define.PROP_MESSAGE_SIGN_UP_OKAY))
@@ -52,7 +50,7 @@ class LoginRepoImpl @Inject constructor(private val context : Context,  private 
         })
     }
 
-    override suspend fun requestSignUp(data: UserInfoDBM, Listener: RepositoryListener) {
+    override suspend fun requestSignUp(data: UserInfo, Listener: RepositoryListener) {
         val ref: DatabaseReference = database.getReference("/" + Define.FIREBASE_USERINFO_URL)
         ref.child(data.id).setValue(
             data,
@@ -73,7 +71,7 @@ class LoginRepoImpl @Inject constructor(private val context : Context,  private 
 
         database.getReference(myUserInfoUrl).addListenerForSingleValueEvent(object  : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.getValue<UserInfoDBM>()
+                val value = snapshot.getValue<UserInfo>()
                 if(value == null){
                     Timber.e("The User Data is Null")
                     Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_login_data)))
@@ -92,22 +90,24 @@ class LoginRepoImpl @Inject constructor(private val context : Context,  private 
         })
     }
 
-    override fun saveUserInfo(data: UserInfoDBM, listener: RepositoryListener) {
+    override fun saveUserInfo(data: UserInfo, Listener: RepositoryListener) {
         try{
-            val userData = userInfo.getUserInfo()
-            if(userData == null){
-                userInfo.insert(data)
-            }else{
-                if(userData.id == data.id && userData.password == data.password){
-                    userInfo.update(data)
+            val appRoomData = AppDatabase.getInst().userInfoDao().getUserInfo()
+            if(appRoomData == null){
+                AppDatabase.getInst().userInfoDao().insert(data)
+            }else {
+                if(appRoomData.id == data.id && appRoomData.password == data.password){
+                    AppDatabase.getInst().userInfoDao().update(data)
                 }else{
-                    userInfo.delete(userData)
-                    userInfo.insert(data)
+                    AppDatabase.getInst().userInfoDao().delete(appRoomData)
+                    AppDatabase.getInst().userInfoDao().insert(data)
                 }
             }
-            listener.onMessageSuccess(ListenerMessage(null  , loginImplContext.getString(R.string.msg_success_login)))
+
+            Listener.onMessageSuccess(ListenerMessage(null  , loginImplContext.getString(R.string.msg_success_login)))
         }catch (e : Exception){
-            listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_error_app)))
+            Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_error_app)))
         }
     }
+
 }
