@@ -1,22 +1,26 @@
 package com.sungil.runningproejct_mvvm.login.viewModel
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.`object`.UserInfo
+import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * 회원가입 viewModel
  */
-class SignUpViewModel (private val repository: LoginRepository , private val context : Context) : ViewModel() , RepositoryListener{
+@HiltViewModel
+class SignUpViewModel @Inject constructor (private val repository: LoginRepository , private val context : Application) : ViewModel() , RepositoryListener{
     //이미 회원정보인지 확인하기 위해 선언한 LiveData
     private var _signUpCheckLiveData = MutableLiveData<SignUpStatus>()
     val signUpCheckLiveData get() = _signUpCheckLiveData
@@ -26,10 +30,10 @@ class SignUpViewModel (private val repository: LoginRepository , private val con
     val signUpLiveData get() = _signUpLiveData
 
     //user정보 latiner 은 이값은 초기화을 명시적으로
-    private  var userInfo : UserInfo ? = null
+    private  var userInfo : UserInfoDBM ? = null
 
     //중복회원 확인
-    fun checkAlreadySignUp(data : UserInfo) {
+    fun checkAlreadySignUp(data : UserInfoDBM) {
 
         _signUpCheckLiveData.value = SignUpStatus.SignUpLoading
 
