@@ -21,9 +21,7 @@ import javax.inject.Inject
 import kotlin.Exception
 
 
-/**
- * 로그인 및 회원가입 Repositorty 구현체
- */
+//로그인 Reop Hilt 주입
 class LoginRepoImpl @Inject constructor(private val context : Context,  private val userInfoDao: UserInfoDao ) : LoginRepository {
 
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)

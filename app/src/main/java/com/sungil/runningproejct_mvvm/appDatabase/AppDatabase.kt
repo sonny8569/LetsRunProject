@@ -14,7 +14,7 @@ import javax.inject.Singleton
     version = 1
 )
 
-//appDatabase 추가
+//appDatabase Hilt 적용
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun wearRunningDao() :  RunningDao

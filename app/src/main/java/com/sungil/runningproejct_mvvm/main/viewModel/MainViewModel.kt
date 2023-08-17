@@ -6,7 +6,7 @@ import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
+//MainViewModel inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() , RepositoryListener {
     val wearLiveData get() = repository.getRunningRoomDB()

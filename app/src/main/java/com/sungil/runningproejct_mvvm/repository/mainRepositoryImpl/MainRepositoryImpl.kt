@@ -8,6 +8,7 @@ import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import javax.inject.Inject
 
+//MainRepo hilt  적용
 class MainRepositoryImpl @Inject constructor(private val context : Context, private val wearRoomData : RunningDao) : MainRepository {
     //repository
     override fun getRunningRoomDB(): LiveData<WearRunDataDBM?> {

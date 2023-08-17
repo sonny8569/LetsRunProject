@@ -23,7 +23,7 @@ import timber.log.Timber
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var  binding : ActivityLoginBinding
-
+    //로그인 Activity Hilt 적용
     private val viewModel : LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

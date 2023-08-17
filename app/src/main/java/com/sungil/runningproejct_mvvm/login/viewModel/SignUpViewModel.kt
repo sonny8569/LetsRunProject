@@ -17,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * 회원가입 viewModel
+ * 회원가입 viewModel Hilt 적용
  */
 @HiltViewModel
 class SignUpViewModel @Inject constructor (private val repository: LoginRepository , private val context : Application) : ViewModel() , RepositoryListener{

@@ -15,7 +15,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
-
+    //viewModel hilt 적용
     private val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private fun initView(){
         val layoutManger : RecyclerView.LayoutManager = LinearLayoutManager(this)
         binding.recyclerviewContent.layoutManager = layoutManger
-
         binding.txtOtherSns.setTextColor(getColor(R.color.gray))
     }
 

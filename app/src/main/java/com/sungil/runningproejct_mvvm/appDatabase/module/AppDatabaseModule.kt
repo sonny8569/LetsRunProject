@@ -11,7 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
+//Appdatabase Moudle
 @Module
 @InstallIn(SingletonComponent::class)
 object AppDatabaseModule {

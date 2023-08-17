@@ -21,7 +21,7 @@ import timber.log.Timber
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivitySignUpBinding
-
+    //회원가입 ViewModel Hilt 적용 
     private val viewModel : SignUpViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

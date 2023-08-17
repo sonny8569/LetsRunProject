@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Login viewModel
+ * Login viewModel Hilt 적용
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor (private val repository: LoginRepository) : ViewModel(), RepositoryListener {
