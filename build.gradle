@@ -20,4 +20,5 @@ ext {
     activity_ktx = "1.7.2"
     fragment_ktx = "1.6.1"
     hilt_version = '2.44'
+    gson = '2.10.1'
 }
