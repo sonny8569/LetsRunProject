@@ -1,4 +1,4 @@
-package com.sungil.runningproejct_mvvm.`object`
+package com.sungil.runningproejct_mvvm.dataObject
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

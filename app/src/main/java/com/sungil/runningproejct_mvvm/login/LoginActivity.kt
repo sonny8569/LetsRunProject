@@ -7,12 +7,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.firebase.BuildConfig
-import com.sungil.runningproejct_mvvm.MainApplication
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityLoginBinding
 import com.sungil.runningproejct_mvvm.login.viewModel.LoginViewModel
 import com.sungil.runningproejct_mvvm.main.MainActivity
-import com.sungil.runningproejct_mvvm.`object`.LoginData
+import com.sungil.runningproejct_mvvm.dataObject.LoginData
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

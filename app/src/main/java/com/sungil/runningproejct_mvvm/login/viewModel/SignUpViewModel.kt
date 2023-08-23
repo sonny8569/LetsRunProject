@@ -1,12 +1,11 @@
 package com.sungil.runningproejct_mvvm.login.viewModel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener

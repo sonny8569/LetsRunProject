@@ -1,9 +1,8 @@
 package com.sungil.runningproejct_mvvm.repository
 
-import com.sungil.runningproejct_mvvm.`object`.LoginData
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.LoginData
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
-import java.util.concurrent.Flow
 
 /**
  * 로그인 및 회원가입 Repository Interface
