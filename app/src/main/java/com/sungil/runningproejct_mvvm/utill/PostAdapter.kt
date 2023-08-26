@@ -2,30 +2,29 @@ package com.sungil.runningproejct_mvvm.utill
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Adapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sungil.runningproejct_mvvm.dataObject.PostData
+import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.databinding.AdapterPostBinding
 
 class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
-    var data = ArrayList<PostData>()
+    var data = ArrayList<FirebasePostData>()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
-
-    private var onItemClickListener : AdapterClickListener  ?= null
+    val commUtil  = CommUtil()
+    private var setOnClickListener : SetOnClickListener  ?= null
     inner class ViewHolder(private val binding : AdapterPostBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(data : PostData){
+        fun bind(data : FirebasePostData){
             binding.txtWriter.text= data.nickName
             binding.txtTitle.text = data.title
             binding.txtContent.text = data.content
-            binding.txtTime.text = CommUtil.convertLocalTime(data.time)
+            binding.txtTime.text = commUtil.convertLocalTime(data.time)
             binding.txtRunData.text = data.running
 
             binding.layoutRoot.setOnClickListener {
-                onItemClickListener?.onValueClick(data.writer)
+                setOnClickListener?.onValueClick(data.writer)
             }
 
         }
@@ -44,8 +43,8 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
         holder.bind(data[position])
     }
 
-    fun setOnClickListener(listener : AdapterClickListener){
-        this.onItemClickListener = listener
+    fun setOnClickListener(listener : SetOnClickListener){
+        this.setOnClickListener = listener
     }
 
 }
