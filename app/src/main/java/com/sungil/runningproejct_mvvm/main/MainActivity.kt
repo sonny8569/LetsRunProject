@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
-import com.sungil.runningproejct_mvvm.utill.AdapterClickListener
+import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this , it , Toast.LENGTH_SHORT).show()
         })
 
-        postAdapter.setOnClickListener(object : AdapterClickListener {
+        postAdapter.setOnClickListener(object : SetOnClickListener {
             override fun onValueClick(data: String) {
                 viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")

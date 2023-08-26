@@ -14,7 +14,7 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    private var onItemClickListener : AdapterClickListener  ?= null
+    private var setOnClickListener : SetOnClickListener  ?= null
     inner class ViewHolder(private val binding : AdapterPostBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data : FirebasePostData){
             binding.txtWriter.text= data.nickName
@@ -24,7 +24,7 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
             binding.txtRunData.text = data.running
 
             binding.layoutRoot.setOnClickListener {
-                onItemClickListener?.onValueClick(data.writer)
+                setOnClickListener?.onValueClick(data.writer)
             }
 
         }
@@ -43,8 +43,8 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
         holder.bind(data[position])
     }
 
-    fun setOnClickListener(listener : AdapterClickListener){
-        this.onItemClickListener = listener
+    fun setOnClickListener(listener : SetOnClickListener){
+        this.setOnClickListener = listener
     }
 
 }
