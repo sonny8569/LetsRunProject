@@ -19,8 +19,6 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
     //repository
     var wearLiveData = repository.getRunningRoomDB()
 
-    var followerLiveData = MutableLiveData<List<String>>()
-
     var followerPostLiveData = repository.getFollowerPostLiveData()
 
     var unFollowerPostLiveData = repository.getUnFollowerPostLiveData()
