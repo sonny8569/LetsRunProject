@@ -3,7 +3,7 @@ package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
 import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
 import com.sungil.runningproejct_mvvm.repository.MainRepository
-import com.sungil.runningproejct_mvvm.useCase.MainUseCase
+import com.sungil.runningproejct_mvvm.useCase.UseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,7 @@ object MainRepoModule {
     fun providedMainRepository(
         runningDao : RunningDao,
         userDao : UserInfoDao,
-        useCase : MainUseCase
+        useCase : UseCase
     ): MainRepository  {
         return MainRepositoryImpl(runningDao , userDao ,useCase )
     }
