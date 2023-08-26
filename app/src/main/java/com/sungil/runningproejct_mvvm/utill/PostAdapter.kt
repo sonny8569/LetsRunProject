@@ -2,14 +2,13 @@ package com.sungil.runningproejct_mvvm.utill
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Adapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sungil.runningproejct_mvvm.dataObject.PostData
+import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.databinding.AdapterPostBinding
 
 class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
-    var data = ArrayList<PostData>()
+    var data = ArrayList<FirebasePostData>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -17,7 +16,7 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     private var onItemClickListener : AdapterClickListener  ?= null
     inner class ViewHolder(private val binding : AdapterPostBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(data : PostData){
+        fun bind(data : FirebasePostData){
             binding.txtWriter.text= data.nickName
             binding.txtTitle.text = data.title
             binding.txtContent.text = data.content
