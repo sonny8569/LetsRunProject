@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     //viewModel hilt 적용
     private val viewModel : MainViewModel by viewModels()
     private val follower = ArrayList<String>()
-    val postAdapter = PostAdapter()
+    private val postAdapter = PostAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
