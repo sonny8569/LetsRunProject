@@ -75,12 +75,13 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.setFollowerLiveData.observe(this, Observer {
-            if (it == "") {
-                Toast.makeText(this, "ERROR to Follower User : $it", Toast.LENGTH_SHORT).show()
-                return@Observer
-            }
-            Toast.makeText(this, "Success to Follower User :$it", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
+
+        viewModel.errorLiveData.observe(this, Observer {
+            Toast.makeText(this , it , Toast.LENGTH_SHORT).show()
+        })
+
         postAdapter.setOnClickListener(object : AdapterClickListener {
             override fun onValueClick(data: String) {
                 viewModel.writeNewFollower(data)
