@@ -18,11 +18,12 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
+
     //viewModel hilt 적용
-    private val viewModel : MainViewModel by viewModels()
-    private val follower = ArrayList<String>()
-    val postAdapter = PostAdapter()
+    private val viewModel: MainViewModel by viewModels()
+    private val postAdapter = PostAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -42,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.getFollower()
     }
 
-    private fun addListener(){
-        viewModel.wearLiveData.observe(this , Observer {
+    private fun addListener() {
+        viewModel.wearLiveData.observe(this, Observer {
             val data = it ?: return@Observer
             Timber.d("The Data is Comming $data")
         })
@@ -61,24 +62,13 @@ class MainActivity : AppCompatActivity() {
             viewModel.getUnFollowerPost()
         }
 
-        viewModel.followerLiveData.observe(this  , Observer {
-            Timber.d("The Follower is Come")
-            follower.clear()
-            follower.addAll(it)
-            for(item in follower){
-                Timber.e("Follower : $item")
-            }
-            viewModel.setFollower(follower)
-            viewModel.getFollowerPost()
-        })
-
         viewModel.followerPostLiveData.observe(this, Observer {
             Timber.d("The Follower Post is Come")
             postAdapter.data = it
             binding.recyclerviewContent.adapter = postAdapter
         })
 
-        viewModel.unFollowerPostLiveData.observe( this , Observer {
+        viewModel.unFollowerPostLiveData.observe(this, Observer {
             Timber.d("The UnFollower Post is Come")
             postAdapter.data = it
             binding.recyclerviewContent.adapter = postAdapter
@@ -89,14 +79,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "ERROR to Follower User : $it", Toast.LENGTH_SHORT).show()
                 return@Observer
             }
-            Toast.makeText(this , "Success to Follower User :$it",Toast.LENGTH_SHORT).show()
-            follower.add(it)
+            Toast.makeText(this, "Success to Follower User :$it", Toast.LENGTH_SHORT).show()
         })
-        postAdapter.setOnClickListener(object : AdapterClickListener{
+        postAdapter.setOnClickListener(object : AdapterClickListener {
             override fun onValueClick(data: String) {
-                if(follower.contains(data)){
-                    return
-                }
                 viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")
             }
