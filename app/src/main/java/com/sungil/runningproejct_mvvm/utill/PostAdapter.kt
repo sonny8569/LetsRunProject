@@ -13,14 +13,14 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
-
+    val commUtil  = CommUtil()
     private var setOnClickListener : SetOnClickListener  ?= null
     inner class ViewHolder(private val binding : AdapterPostBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data : FirebasePostData){
             binding.txtWriter.text= data.nickName
             binding.txtTitle.text = data.title
             binding.txtContent.text = data.content
-            binding.txtTime.text = CommUtil.convertLocalTime(data.time)
+            binding.txtTime.text = commUtil.convertLocalTime(data.time)
             binding.txtRunData.text = data.running
 
             binding.layoutRoot.setOnClickListener {

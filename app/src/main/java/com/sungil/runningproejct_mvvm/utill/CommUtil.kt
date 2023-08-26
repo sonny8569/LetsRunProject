@@ -6,14 +6,12 @@ import java.util.Locale
 import java.util.TimeZone
 
 class CommUtil {
-    companion object{
-        fun convertLocalTime(timeStamp : Long): String {
-            val timeZone = TimeZone.getDefault()
-            val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-            format.timeZone = timeZone
+    fun convertLocalTime(timeStamp : Long): String {
+        val timeZone = TimeZone.getDefault()
+        val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+        format.timeZone = timeZone
 
-            val date = Date(timeStamp)
-            return format.format(date)
-        }
+        val date = Date(timeStamp)
+        return format.format(date)
     }
 }
