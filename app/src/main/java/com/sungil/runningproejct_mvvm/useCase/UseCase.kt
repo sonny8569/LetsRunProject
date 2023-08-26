@@ -1,14 +1,14 @@
 package com.sungil.runningproejct_mvvm.useCase
 
 import com.google.firebase.database.DataSnapshot
-import com.sungil.runningproejct_mvvm.dataObject.PostData
+import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import javax.inject.Inject
 
-class MainUseCase @Inject constructor() {
+class UseCase @Inject constructor() {
 
-    fun getFollowerData(snapshot : DataSnapshot , follower : ArrayList<String>): ArrayList<PostData> {
+    fun getFollowerData(snapshot : DataSnapshot , follower : ArrayList<String>): ArrayList<FirebasePostData> {
         val followerMap = snapshot.value as? HashMap<String ,HashMap<String ,Any>>
-        val followerPost = ArrayList<PostData>()
+        val followerPost = ArrayList<FirebasePostData>()
         followerMap?.forEach { (email, innerMap) ->
             if (follower.contains(email)) {
                 // innerMap에서 필요한 데이터 추출
@@ -18,17 +18,17 @@ class MainUseCase @Inject constructor() {
                 val content = innerMap["content"] as? String ?: ""
                 val nickname = innerMap["nickName"] as? String ?: ""
                 // PostData 객체 생성
-                val postData = PostData(email , title, content, runningTime, runningDistance , nickname)
-                followerPost.add(postData)
+                val firebasePostData = FirebasePostData(email , title, content, runningTime, runningDistance , nickname)
+                followerPost.add(firebasePostData)
             }
         }
         return followerPost
 
     }
 
-    fun getUnFollowerData(snapshot : DataSnapshot , follower : ArrayList<String>): ArrayList<PostData> {
+    fun getUnFollowerData(snapshot : DataSnapshot , follower : ArrayList<String>): ArrayList<FirebasePostData> {
         val unFollowerMap = snapshot.value as? HashMap<String, HashMap<String, Any>>
-        val unFollowerPost = ArrayList<PostData>()
+        val unFollowerPost = ArrayList<FirebasePostData>()
         unFollowerMap?.forEach { (email, innerMap) ->
             if(!follower.contains(email)){
                 // innerMap에서 필요한 데이터 추출
@@ -41,9 +41,9 @@ class MainUseCase @Inject constructor() {
                 val content = innerMap["content"] as? String ?: ""
                 val nickname = innerMap["nickName"] as? String ?: ""
                 // PostData 객체 생성
-                val postData = PostData(email ,title, content, runningTime, runningDistance,nickname)
+                val firebasePostData = FirebasePostData(email ,title, content, runningTime, runningDistance,nickname)
 
-                unFollowerPost.add(postData)
+                unFollowerPost.add(firebasePostData)
             }
         }
         return unFollowerPost
