@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
-import com.sungil.runningproejct_mvvm.utill.AdapterClickListener
+import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -18,10 +18,12 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
+
     //viewModel hilt 적용
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private val postAdapter = PostAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -41,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.getFollower()
     }
 
-    private fun addListener(){
-        viewModel.wearLiveData.observe(this , Observer {
+    private fun addListener() {
+        viewModel.wearLiveData.observe(this, Observer {
             val data = it ?: return@Observer
             Timber.d("The Data is Comming $data")
         })
@@ -51,50 +53,39 @@ class MainActivity : AppCompatActivity() {
         binding.txtMySns.setOnClickListener {
             binding.txtOtherSns.setTextColor(getColor(R.color.gray))
             binding.txtMySns.setTextColor(getColor(R.color.white))
-            viewModel.getFollowerPost()
+            viewModel.requestFollowerPost()
         }
 
         binding.txtOtherSns.setOnClickListener {
             binding.txtMySns.setTextColor(getColor(R.color.gray))
             binding.txtOtherSns.setTextColor(getColor(R.color.white))
-            viewModel.getUnFollowerPost()
+            viewModel.requestUnFollowerPost()
         }
-
-        viewModel.followerLiveData.observe(this  , Observer {
-            Timber.d("The Follower is Come")
-            val follower = ArrayList<String>()
-            follower.addAll(it)
-            for(item in follower){
-                Timber.e("Follower : $item")
-            }
-            viewModel.setFollower(follower)
-            viewModel.getFollowerPost()
-        })
 
         viewModel.followerPostLiveData.observe(this, Observer {
             Timber.d("The Follower Post is Come")
             postAdapter.data = it
         })
 
-        viewModel.unFollowerPostLiveData.observe( this , Observer {
+        viewModel.unFollowerPostLiveData.observe(this, Observer {
             Timber.d("The UnFollower Post is Come")
             postAdapter.data = it
         })
+
         binding.recyclerviewContent.adapter = postAdapter
+
         viewModel.setFollowerLiveData.observe(this, Observer {
-            if (it == "") {
-                Toast.makeText(this, "ERROR to Follower User : $it", Toast.LENGTH_SHORT).show()
-                return@Observer
-            }
-            Toast.makeText(this , "Success to Follower User :$it",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
-        postAdapter.setOnClickListener(object : AdapterClickListener{
+
+        viewModel.errorLiveData.observe(this, Observer {
+            Toast.makeText(this , it , Toast.LENGTH_SHORT).show()
+        })
+
+        postAdapter.setOnClickListener(object : SetOnClickListener {
             override fun onValueClick(data: String) {
-                if(follower.contains(data)){
-                    return
-                }
-                viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")
+                viewModel.writeNewFollower(data)
             }
         })
     }

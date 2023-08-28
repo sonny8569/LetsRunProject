@@ -5,11 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.repository.MainRepository
-import com.sungil.runningproejct_mvvm.utill.ListenerMessage
-import com.sungil.runningproejct_mvvm.utill.RepositoryListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -17,15 +14,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor  (private val repository: MainRepository ): ViewModel()  {
     //repository
-    var wearLiveData = repository.getRunningRoomDB()
+    var wearLiveData = repository.getRunningData()
 
-    var followerLiveData = MutableLiveData<List<String>>()
+    var postData = MutableLiveData<ArrayList<FirebasePostData>>()
 
-    var followerPostLiveData = repository.getFollowerPostLiveData()
+    var unFollowerPostLiveData = MutableLiveData<ArrayList<FirebasePostData>>()
 
-    var unFollowerPostLiveData = repository.getUnFollowerPostLiveData()
+    var setFollowerLiveData = MutableLiveData<String>()
 
-    var setFollowerLiveData = repository.getSetFollowerLiveData()
+    var errorLiveData = MutableLiveData<String>()
 
     private var follower = ArrayList<String>()
 
@@ -33,34 +30,65 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
 
     fun getFollower() = viewModelScope.launch(Dispatchers.IO) {
         val data = repository.getUserInfo()
-        if (data != null) {
+        if(data == null){
+            errorLiveData.postValue("User Data is Null ERROR")
+            return@launch
+        }
+        try{
             val followers = repository.getFollower(data.id)
             followers.collect {
                 follower.addAll(it)
-                getFollowerPost()
+                requestFollowerPost()
             }
+        }catch (e : Exception){
+            Timber.e("ERROR to get Follower Data")
+            errorLiveData.postValue(" ERROR to get Follower Data")
         }
     }
 
-    fun getFollowerPost() {
-        repository.getFollowerPost(follower)
+    fun requestFollowerPost() = viewModelScope.launch(Dispatchers.IO) {
+        try{
+            val followerPost = repository.getFollowerPost(follower)
+            followerPost.collect {
+                postData.postValue(it)
+            }
+        }catch (e : Exception){
+            Timber.e("Error to get Follower Post")
+            errorLiveData.postValue("error to get Follower Post")
+        }
     }
 
-    fun getUnFollowerPost() {
-        repository.getUnFollowerPost(follower)
+    fun requestUnFollowerPost()  = viewModelScope.launch(Dispatchers.IO){
+        try{
+            val unFollowerPostData = repository.getUnFollowerPost(follower)
+            unFollowerPostData.collect{
+                postData.postValue(it)
+            }
+        }catch (e :Exception){
+            errorLiveData.postValue( "ERROR to get UnFollower Post Data")
+        }
     }
 
-    fun writeNewFollower(userId : String){
-        val data = repository.getUserInfo() ?: return
+    fun writeNewFollower(userId : String) = viewModelScope.launch(Dispatchers.IO){
+        val data = repository.getUserInfo()
+        if(data == null){
+            errorLiveData.postValue("User Data is Null ERROR ")
+            return@launch
+        }
         if(follower.contains(userId)){
             Timber.e("Already Follower User")
-            return
+            errorLiveData.postValue("Already Follower")
+            return@launch
         }
-        repository.setNewFollower(userId , data.id)
+        val result = repository.setNewFollower(userId , data.id)
+        result.collect{
+            if(it == "Success"){
+                follower.add(userId)
+            }
+            setFollowerLiveData.postValue(it)
+        }
     }
-    fun setFollower(followers : ArrayList<String>){
-        this.follower = followers
-    }
+
 
     fun postSns() = viewModelScope.launch(Dispatchers.IO) {
 
