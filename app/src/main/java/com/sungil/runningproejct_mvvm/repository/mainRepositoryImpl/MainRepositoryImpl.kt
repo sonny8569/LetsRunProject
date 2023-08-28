@@ -12,8 +12,9 @@ import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
 import com.sungil.runningproejct_mvvm.repository.MainRepository
+import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
 import com.sungil.runningproejct_mvvm.utill.Define
-import com.sungil.runningproejct_mvvm.useCase.UseCase
+import com.sungil.runningproejct_mvvm.useCase.GetFollowerUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -25,7 +26,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 //MainRepo hilt  적용
-class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao , private val userDao : UserInfoDao , private val useCase : UseCase) : MainRepository {
+class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao, private val userDao : UserInfoDao, private val getFollowerUseCase : GetFollowerUseCase, private val unFollowerUseCase : GetUnFollowerUseCase) : MainRepository {
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
 
     override fun getRunningRoomDB(): LiveData<WearRunDataDBM?> {
@@ -62,7 +63,7 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
             database.getReference(followerUrl).addValueEventListener(object  :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val followerPost = useCase.getFollowerData(snapshot , follower)
+                    val followerPost = getFollowerUseCase.getFollowerData(snapshot , follower)
                      it.resume(followerPost)
                 }
                 override fun onCancelled(error: DatabaseError) {
@@ -80,7 +81,7 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
             database.getReference(followerUrl).addValueEventListener(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val unFollowerPost = useCase.getUnFollowerData(snapshot, follower)
+                    val unFollowerPost =  unFollowerUseCase.getUnFollowerData(snapshot, follower)
                     it.resume(unFollowerPost)
                 }
 
