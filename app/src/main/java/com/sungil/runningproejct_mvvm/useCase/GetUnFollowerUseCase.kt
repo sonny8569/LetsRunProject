@@ -2,8 +2,9 @@ package com.sungil.runningproejct_mvvm.useCase
 
 import com.google.firebase.database.DataSnapshot
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import javax.inject.Inject
 
-class GetUnFollowerUseCase {
+class GetUnFollowerUseCase @Inject constructor() {
     fun getUnFollowerData(snapshot : DataSnapshot, follower : ArrayList<String>): ArrayList<FirebasePostData> {
         val unFollowerMap = snapshot.value as? HashMap<String, HashMap<String, Any>>
         val unFollowerPost = ArrayList<FirebasePostData>()
