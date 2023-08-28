@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     //viewModel hilt 적용
     private val viewModel : MainViewModel by viewModels()
-    private val follower = ArrayList<String>()
     private val postAdapter = PostAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.followerLiveData.observe(this  , Observer {
             Timber.d("The Follower is Come")
-            follower.clear()
+            val follower = ArrayList<String>()
             follower.addAll(it)
             for(item in follower){
                 Timber.e("Follower : $item")
@@ -75,22 +74,19 @@ class MainActivity : AppCompatActivity() {
         viewModel.followerPostLiveData.observe(this, Observer {
             Timber.d("The Follower Post is Come")
             postAdapter.data = it
-            binding.recyclerviewContent.adapter = postAdapter
         })
 
         viewModel.unFollowerPostLiveData.observe( this , Observer {
             Timber.d("The UnFollower Post is Come")
             postAdapter.data = it
-            binding.recyclerviewContent.adapter = postAdapter
         })
-
+        binding.recyclerviewContent.adapter = postAdapter
         viewModel.setFollowerLiveData.observe(this, Observer {
             if (it == "") {
                 Toast.makeText(this, "ERROR to Follower User : $it", Toast.LENGTH_SHORT).show()
                 return@Observer
             }
             Toast.makeText(this , "Success to Follower User :$it",Toast.LENGTH_SHORT).show()
-            follower.add(it)
         })
         postAdapter.setOnClickListener(object : AdapterClickListener{
             override fun onValueClick(data: String) {
