@@ -16,7 +16,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
     //repository
     var wearLiveData = repository.getRunningData()
 
-    var followerPostLiveData = MutableLiveData<ArrayList<FirebasePostData>>()
+    var postData = MutableLiveData<ArrayList<FirebasePostData>>()
 
     var unFollowerPostLiveData = MutableLiveData<ArrayList<FirebasePostData>>()
 
@@ -50,7 +50,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
         try{
             val followerPost = repository.getFollowerPost(follower)
             followerPost.collect {
-                followerPostLiveData.postValue(it)
+                postData.postValue(it)
             }
         }catch (e : Exception){
             Timber.e("Error to get Follower Post")
@@ -62,7 +62,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
         try{
             val unFollowerPostData = repository.getUnFollowerPost(follower)
             unFollowerPostData.collect{
-                unFollowerPostLiveData.postValue(it)
+                postData.postValue(it)
             }
         }catch (e :Exception){
             errorLiveData.postValue( "ERROR to get UnFollower Post Data")
