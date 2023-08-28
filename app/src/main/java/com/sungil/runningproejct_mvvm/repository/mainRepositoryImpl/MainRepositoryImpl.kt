@@ -29,7 +29,7 @@ import kotlin.coroutines.suspendCoroutine
 class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao, private val userDao : UserInfoDao, private val getFollowerUseCase : GetFollowerUseCase, private val unFollowerUseCase : GetUnFollowerUseCase) : MainRepository {
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
 
-    override fun getRunningRoomDB(): LiveData<WearRunDataDBM?> {
+    override fun getRunningData(): LiveData<WearRunDataDBM?> {
         return wearRoomData.getRunningData()
     }
 

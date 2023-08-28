@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor  (private val repository: MainRepository ): ViewModel()  {
     //repository
-    var wearLiveData = repository.getRunningRoomDB()
+    var wearLiveData = repository.getRunningData()
 
     var followerPostLiveData = MutableLiveData<ArrayList<FirebasePostData>>()
 

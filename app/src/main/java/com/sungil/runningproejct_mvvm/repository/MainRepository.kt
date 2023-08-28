@@ -1,7 +1,6 @@
 package com.sungil.runningproejct_mvvm.repository
 
 import androidx.lifecycle.LiveData
-import com.google.firebase.ktx.Firebase
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface MainRepository {
-    fun getRunningRoomDB(): LiveData<WearRunDataDBM?>
+    fun getRunningData(): LiveData<WearRunDataDBM?>
 
     fun getFollower(userId: String) : Flow<List<String>>
 
