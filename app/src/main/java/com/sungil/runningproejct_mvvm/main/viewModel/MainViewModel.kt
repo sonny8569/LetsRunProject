@@ -5,11 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.repository.MainRepository
-import com.sungil.runningproejct_mvvm.utill.ListenerMessage
-import com.sungil.runningproejct_mvvm.utill.RepositoryListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,7 +38,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
             val followers = repository.getFollower(data.id)
             followers.collect {
                 follower.addAll(it)
-                getFollowerPost()
+                requestFollowerPost()
             }
         }catch (e : Exception){
             Timber.e("ERROR to get Follower Data")
@@ -49,7 +46,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
         }
     }
 
-    fun getFollowerPost() = viewModelScope.launch(Dispatchers.IO) {
+    fun requestFollowerPost() = viewModelScope.launch(Dispatchers.IO) {
         try{
             val followerPost = repository.getFollowerPost(follower)
             followerPost.collect {
@@ -61,7 +58,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
         }
     }
 
-    fun getUnFollowerPost()  = viewModelScope.launch(Dispatchers.IO){
+    fun requestUnFollowerPost()  = viewModelScope.launch(Dispatchers.IO){
         try{
             val unFollowerPostData = repository.getUnFollowerPost(follower)
             unFollowerPostData.collect{
