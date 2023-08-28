@@ -62,13 +62,8 @@ class MainActivity : AppCompatActivity() {
             viewModel.requestUnFollowerPost()
         }
 
-        viewModel.followerPostLiveData.observe(this, Observer {
+        viewModel.postData.observe(this, Observer {
             Timber.d("The Follower Post is Come")
-            postAdapter.data = it
-        })
-
-        viewModel.unFollowerPostLiveData.observe(this, Observer {
-            Timber.d("The UnFollower Post is Come")
             postAdapter.data = it
         })
 
