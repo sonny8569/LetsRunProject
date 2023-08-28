@@ -84,8 +84,8 @@ class MainActivity : AppCompatActivity() {
 
         postAdapter.setOnClickListener(object : SetOnClickListener {
             override fun onValueClick(data: String) {
-                viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")
+                viewModel.writeNewFollower(data)
             }
         })
     }
