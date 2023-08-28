@@ -53,26 +53,26 @@ class MainActivity : AppCompatActivity() {
         binding.txtMySns.setOnClickListener {
             binding.txtOtherSns.setTextColor(getColor(R.color.gray))
             binding.txtMySns.setTextColor(getColor(R.color.white))
-            viewModel.getFollowerPost()
+            viewModel.requestFollowerPost()
         }
 
         binding.txtOtherSns.setOnClickListener {
             binding.txtMySns.setTextColor(getColor(R.color.gray))
             binding.txtOtherSns.setTextColor(getColor(R.color.white))
-            viewModel.getUnFollowerPost()
+            viewModel.requestUnFollowerPost()
         }
 
         viewModel.followerPostLiveData.observe(this, Observer {
             Timber.d("The Follower Post is Come")
             postAdapter.data = it
-            binding.recyclerviewContent.adapter = postAdapter
         })
 
         viewModel.unFollowerPostLiveData.observe(this, Observer {
             Timber.d("The UnFollower Post is Come")
             postAdapter.data = it
-            binding.recyclerviewContent.adapter = postAdapter
         })
+
+        binding.recyclerviewContent.adapter = postAdapter
 
         viewModel.setFollowerLiveData.observe(this, Observer {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
