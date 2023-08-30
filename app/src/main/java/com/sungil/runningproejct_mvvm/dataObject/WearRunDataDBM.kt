@@ -2,10 +2,10 @@ package com.sungil.runningproejct_mvvm.dataObject
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
+import com.sungil.runningproejct_mvvm.utill.Define
 
 @Entity(
-    tableName =  AppDatabase.WEAR_RUNNING_TABLE
+    tableName =  Define.WEAR_RUNNING_TABLE
 )
 //wear 에서 올 데이터
  class WearRunDataDBM(

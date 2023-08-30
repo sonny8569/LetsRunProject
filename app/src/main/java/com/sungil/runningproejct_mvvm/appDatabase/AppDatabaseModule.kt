@@ -1,20 +1,17 @@
-package com.sungil.runningproejct_mvvm.appDatabase.module
+package com.sungil.runningproejct_mvvm.appDatabase
 
 import android.content.Context
 import androidx.room.Room
-import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-//Appdatabase Moudle
+
 @Module
 @InstallIn(SingletonComponent::class)
-object AppDatabaseModule {
+class AppDatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {

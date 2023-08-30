@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.runningproejct_mvvm.utill.Define
 
 @Dao
 interface UserInfoDao {
@@ -19,6 +20,6 @@ interface UserInfoDao {
     @Update
     fun update(data : UserInfoDBM)
 
-    @Query("SELECT * FROM ${AppDatabase.USERINFO_TABLE}")
+    @Query("SELECT * FROM ${Define.USERINFO_TABLE}")
     fun getUserInfo() : UserInfoDBM?
 }

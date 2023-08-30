@@ -8,19 +8,10 @@ import javax.inject.Singleton
 
 @Singleton
 @Database(
-    entities = [WearRunDataDBM :: class , UserInfoDBM :: class],
-    version = 2
+    entities = [WearRunDataDBM::class, UserInfoDBM::class],
+    version = 4
 )
-//appDatabase Hilt 적용
 abstract class AppDatabase : RoomDatabase() {
-
-    abstract fun wearRunningDao() :  RunningDao
-
-    abstract fun userInfoDao () : UserInfoDao
-
-    companion object{
-        const val WEAR_RUNNING_TABLE = "runningTable"
-        const val USERINFO_TABLE = "userInfoTable"
-    }
-
+    abstract fun wearRunningDao(): RunningDao
+    abstract fun userInfoDao(): UserInfoDao
 }
