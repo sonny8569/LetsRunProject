@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
+import com.sungil.runningproejct_mvvm.main.bottomSheet.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
 import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
@@ -83,5 +84,29 @@ class MainActivity : AppCompatActivity() {
                 viewModel.writeNewFollower(data)
             }
         })
+
+        binding.btnPostSns.setOnClickListener {
+            setPostSnsBottomSheet()
+        }
+
+        viewModel.postLiveData.observe(this , Observer {
+            Toast.makeText(this , it , Toast.LENGTH_SHORT).show()
+        })
+
+    }
+
+    private fun setPostSnsBottomSheet() {
+        val bottomSheet: PostSnsBottomSheet = PostSnsBottomSheet {
+            if (it.content == null) {
+                return@PostSnsBottomSheet
+            }
+            viewModel.postSns(it, getCurrentTimeInMillis())
+            Toast.makeText(this , getString(R.string.msg_post_sns) , Toast.LENGTH_SHORT).show()
+        }
+        bottomSheet.show(supportFragmentManager , bottomSheet.tag)
+    }
+
+    private fun getCurrentTimeInMillis(): Long {
+        return System.currentTimeMillis()
     }
 }

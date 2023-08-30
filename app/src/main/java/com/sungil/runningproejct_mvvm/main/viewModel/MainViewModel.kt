@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +18,6 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
     var wearLiveData = repository.getRunningData()
 
     var postData = MutableLiveData<ArrayList<FirebasePostData>>()
-
-    var unFollowerPostLiveData = MutableLiveData<ArrayList<FirebasePostData>>()
 
     var setFollowerLiveData = MutableLiveData<String>()
 
@@ -38,6 +37,7 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
             val followers = repository.getFollower(data.id)
             followers.collect {
                 follower.addAll(it)
+                follower.add(data.id)
                 requestFollowerPost()
             }
         }catch (e : Exception){
@@ -90,17 +90,17 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
     }
 
 
-    fun postSns() = viewModelScope.launch(Dispatchers.IO) {
+    fun postSns(data: PostSnsBottomSheet, timeStamp: Long) {
 
         val userInfo = repository.getUserInfo()
-        var data = FirebasePostData(
-            userInfo!!.id, "test2입니다", "test2", 1692804242263, "123km", userInfo.nickName
+        val postData = FirebasePostData(
+            userInfo!!.id, data.title!!, data.content!!, timeStamp, data.km!!, userInfo.nickName
         )
-
-        val result = repository.writePost(data)
-        result.collect {
-            postLiveData.postValue(it)
+        viewModelScope.launch {
+            val result = repository.writePost(postData)
+            postLiveData.value = result
         }
+
     }
 
 

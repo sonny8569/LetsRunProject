@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -59,20 +60,14 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
 
     override fun getFollowerPost(follower: ArrayList<String>) : Flow<ArrayList<FirebasePostData>> = flow {
         val followerUrl = Define.FIREBASE_SNS
-        val followerPostData = suspendCoroutine<ArrayList<FirebasePostData>>{
-            database.getReference(followerUrl).addValueEventListener(object  :
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val followerPost = getFollowerUseCase.getFollowerData(snapshot , follower)
-                     it.resume(followerPost)
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    Timber.e("Error to get FollowerPost :$error")
-                    it.resumeWithException(error.toException())
-                }
-            })
+        try {
+            val snapshot = database.getReference(followerUrl).get().await() // Using await() to get a snapshot
+            val followerPost = getFollowerUseCase.getFollowerData(snapshot, follower)
+            emit(followerPost)
+        } catch (e: Exception) {
+            Timber.e("Error to get FollowerPost: $e")
+            throw e
         }
-        emit(followerPostData)
     }
 
     override fun getUnFollowerPost(follower: ArrayList<String>): Flow<ArrayList<FirebasePostData>> = flow {
@@ -111,21 +106,20 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
         emit(setFollowerResult)
     }
 
-    override  fun writePost(data: FirebasePostData): Flow<String> = flow  {
-        val snsPostUrl = Define.FIREBASE_SNS_test
+    override suspend fun writePost(data: FirebasePostData): String {
+        val snsPostUrl = Define.FIREBASE_SNS+ "/" + data.writer
         val snsPostRef = database.getReference(snsPostUrl)
+        var resultString = ""
 
-        val result = suspendCoroutine<String> { continuation ->
-            snsPostRef.setValue(data).addOnSuccessListener {
-                Timber.d("Success to Post Data")
-                continuation.resume("Success")
-            }.addOnFailureListener {
-                Timber.e("ERROR to Post Data")
-                continuation.resume("error")
-            }
-        }
+        snsPostRef.setValue(data).addOnSuccessListener {
+            Timber.d("Success to Post Data")
+            resultString = "success"
+        }.addOnFailureListener {
+            Timber.e("ERROR to Post Data")
+            resultString = "error To Write Post"
+        }.await()
 
-        emit(result)
-    }.flowOn(Dispatchers.IO)
+        return resultString
+    }
 
 }
