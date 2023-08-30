@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
 
-//WAER DATA
 @Entity(
     tableName =  AppDatabase.WEAR_RUNNING_TABLE
 )

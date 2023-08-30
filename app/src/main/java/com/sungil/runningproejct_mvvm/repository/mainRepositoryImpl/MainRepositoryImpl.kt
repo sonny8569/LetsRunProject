@@ -23,11 +23,18 @@ import kotlinx.coroutines.flow.flowOn
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import android.content.Context
+import androidx.lifecycle.LiveData
+import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
+import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
+import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
+import com.sungil.runningproejct_mvvm.repository.MainRepository
+import javax.inject.Inject
 
 //MainRepo hilt  적용
 class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao , private val userDao : UserInfoDao , private val useCase : UseCase) : MainRepository {
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
-
+    
     override fun getRunningRoomDB(): LiveData<WearRunDataDBM?> {
         return wearRoomData.getRunningData()
     }
@@ -126,5 +133,4 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
 
         emit(result)
     }.flowOn(Dispatchers.IO)
-
 }

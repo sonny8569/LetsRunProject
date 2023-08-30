@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.sungil.runningproejct_mvvm.`object`.UserInfo
-//로그인정보 추가
+import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
 @Dao
 interface UserInfoDao {
 
@@ -21,4 +21,15 @@ interface UserInfoDao {
 
     @Query("SELECT * FROM ${AppDatabase.USERINFO_TABLE}")
     fun getUserInfo() : UserInfo?
+  
+    fun insert(data : UserInfoDBM)
+
+    @Delete
+    fun delete(data : UserInfoDBM)
+
+    @Update
+    fun update(data : UserInfoDBM)
+
+    @Query("SELECT * FROM ${AppDatabase.USERINFO_TABLE}")
+    fun getUserInfo() : UserInfoDBM?
 }

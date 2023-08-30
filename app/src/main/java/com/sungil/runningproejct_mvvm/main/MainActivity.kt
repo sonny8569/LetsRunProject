@@ -14,14 +14,21 @@ import com.sungil.runningproejct_mvvm.utill.AdapterClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
+
     //viewModel hilt 적용
     private val viewModel : MainViewModel by viewModels()
     private val postAdapter = PostAdapter()
+
+
+    private val viewModel : MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFollower(){
         viewModel.getFollower()
+        binding.txtOtherSns.setTextColor(getColor(R.color.gray))
     }
 
     private fun addListener(){
@@ -90,12 +98,10 @@ class MainActivity : AppCompatActivity() {
         })
         postAdapter.setOnClickListener(object : AdapterClickListener{
             override fun onValueClick(data: String) {
-                if(follower.contains(data)){
-                    return
-                }
-                viewModel.writeNewFollower(data)
+            viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")
             }
         })
+        }
     }
 }

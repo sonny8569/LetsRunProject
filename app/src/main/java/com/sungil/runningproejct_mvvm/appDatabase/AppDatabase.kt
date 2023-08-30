@@ -7,12 +7,13 @@ import com.sungil.runningproejct_mvvm.MainApplication
 import com.sungil.runningproejct_mvvm.`object`.UserInfo
 import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
 
+@Singleton
 @Database(
-    entities = [WearRunDataDBM :: class , UserInfo :: class],
+    entities = [WearRunDataDBM :: class , UserInfoDBM :: class],
     version = 1
 )
 
-//appDatabase 추가 userinfo 은 회원정보 wearRunning 은 운동정보
+//appDatabase 추가
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun wearRunningDao() :  RunningDao

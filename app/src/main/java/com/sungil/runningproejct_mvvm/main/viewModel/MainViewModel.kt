@@ -4,10 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import androidx.lifecycle.ViewModel
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -75,5 +75,18 @@ class MainViewModel @Inject constructor  (private val repository: MainRepository
         }
     }
 
+import javax.inject.Inject
+
+@HiltViewModel
+class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() , RepositoryListener {
+    val wearLiveData get() = repository.getRunningRoomDB()
+    //repository
+    override fun onMessageSuccess(data: ListenerMessage) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageFail(data: ListenerMessage) {
+        TODO("Not yet implemented")
+    }
 
 }
