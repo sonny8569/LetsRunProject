@@ -7,6 +7,9 @@ class Define {
     companion object{
         const val FIREBASE_BASE_URL = "https://flabrunningproject-default-rtdb.firebaseio.com"
         const val FIREBASE_USERINFO_URL = "user"
+        const val FIREBASE_FOLLOWER = "follower"
+        const val FIREBASE_SNS = "sns"
+        const val FIREBASE_SNS_test = "snsTest"
 
         //Message
         const val PROP_MESSAGE_SIGN_UP_OKAY = "signUpOkay"
