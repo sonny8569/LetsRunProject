@@ -13,17 +13,17 @@ import javax.inject.Singleton
 
 //MainRepo Module
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(SingletonComponent :: class)
 object MainRepoModule {
     @Provides
     @Singleton
     fun providedMainRepository(
-        runningDao: RunningDao,
-        userDao: UserInfoDao,
-        getFollowerUseCase: GetFollowerUseCase,
-        unFollowerUseCase: GetUnFollowerUseCase,
-    ): MainRepository {
-        return MainRepositoryImpl(runningDao, userDao, getFollowerUseCase, unFollowerUseCase)
+        runningDao : RunningDao,
+        userDao : UserInfoDao,
+        getFollowerUseCase : GetFollowerUseCase,
+        unFollowerUseCase : GetUnFollowerUseCase
+    ): MainRepository  {
+        return MainRepositoryImpl(runningDao , userDao ,getFollowerUseCase , unFollowerUseCase )
     }
 
 
