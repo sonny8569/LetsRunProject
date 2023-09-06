@@ -8,100 +8,115 @@ import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.publishOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 //MainViewModel inject
 @HiltViewModel
-class MainViewModel @Inject constructor  (private val repository: MainRepository ): ViewModel()  {
-    //repository
-    var wearLiveData = repository.getRunningData()
+class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
 
-    var postData = MutableLiveData<ArrayList<FirebasePostData>>()
+    var postData = MutableLiveData<MainStatus>()
 
-    var setFollowerLiveData = MutableLiveData<String>()
-
-    var errorLiveData = MutableLiveData<String>()
+    var setFollowerLiveData = MutableLiveData<MainStatus>()
 
     private var follower = ArrayList<String>()
 
-    val postLiveData = MutableLiveData<String>()
+    val postLiveData = MutableLiveData<MainStatus>()
 
-    fun getFollower() = viewModelScope.launch(Dispatchers.IO) {
+    var followerLiveData = MutableLiveData<MainStatus>()
+
+    init {
+        getFollower()
+    }
+
+    private fun getFollower() {
         val data = repository.getUserInfo()
-        if(data == null){
-            errorLiveData.postValue("User Data is Null ERROR")
-            return@launch
+        if (data == null) {
+            followerLiveData.postValue(MainStatus.MainError("ERROR The User Data is Null"))
+            return
         }
-        try{
+        viewModelScope.launch(Dispatchers.IO) {
             val followers = repository.getFollower(data.id)
             followers.collect {
+                if (it.isEmpty()) {
+                    followerLiveData.postValue(MainStatus.MainError("The Follower is Empty"))
+                    return@collect
+                }
+                followerLiveData.postValue(MainStatus.MainSuccess("Success to get Follower Please Wait"))
                 follower.addAll(it)
                 follower.add(data.id)
                 requestFollowerPost()
             }
-        }catch (e : Exception){
-            Timber.e("ERROR to get Follower Data")
-            errorLiveData.postValue(" ERROR to get Follower Data")
         }
     }
 
-    fun requestFollowerPost() = viewModelScope.launch(Dispatchers.IO) {
-        try{
+    fun requestFollowerPost() {
+        postData.postValue(MainStatus.MainLoading)
+        viewModelScope.launch(Dispatchers.IO) {
             val followerPost = repository.getFollowerPost(follower)
             followerPost.collect {
-                postData.postValue(it)
+                if (it.isEmpty()) {
+                    postData.postValue(MainStatus.MainError("The Follower Post is Null"))
+                    return@collect
+                }
+                postData.postValue(MainStatus.MainSuccess(it))
             }
-        }catch (e : Exception){
-            Timber.e("Error to get Follower Post")
-            errorLiveData.postValue("error to get Follower Post")
         }
     }
 
-    fun requestUnFollowerPost()  = viewModelScope.launch(Dispatchers.IO){
-        try{
+    fun requestUnFollowerPost() {
+        postData.postValue(MainStatus.MainLoading)
+        viewModelScope.launch(Dispatchers.IO) {
             val unFollowerPostData = repository.getUnFollowerPost(follower)
-            unFollowerPostData.collect{
-                postData.postValue(it)
+            unFollowerPostData.collect {
+                if (it.size == 0) {
+                    postData.postValue(MainStatus.MainError("The Data is Null"))
+                }
+                postData.postValue(MainStatus.MainSuccess(it))
             }
-        }catch (e :Exception){
-            errorLiveData.postValue( "ERROR to get UnFollower Post Data")
         }
     }
 
-    fun writeNewFollower(userId : String) = viewModelScope.launch(Dispatchers.IO){
+    fun writeNewFollower(userId: String) {
         val data = repository.getUserInfo()
-        if(data == null){
-            errorLiveData.postValue("User Data is Null ERROR ")
-            return@launch
+        if (data == null) {
+            setFollowerLiveData.postValue(MainStatus.MainError("ERROR The User Data is null"))
+            return
         }
-        if(follower.contains(userId)){
+        if (follower.contains(userId)) {
             Timber.e("Already Follower User")
-            errorLiveData.postValue("Already Follower")
-            return@launch
+            setFollowerLiveData.postValue(MainStatus.MainError("Already Follower user"))
+            return
         }
-        val result = repository.setNewFollower(userId , data.id)
-        result.collect{
-            if(it == "Success"){
-                follower.add(userId)
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.setNewFollower(userId, data.id)
+            result.collect {
+                if (it == "Success") {
+                    follower.add(userId)
+                }
+                setFollowerLiveData.postValue(MainStatus.MainSuccess(it))
             }
-            setFollowerLiveData.postValue(it)
         }
     }
 
 
     fun postSns(data: PostSnsBottomSheet, timeStamp: Long) {
-
+        postData.value = MainStatus.MainLoading
         val userInfo = repository.getUserInfo()
         val postData = FirebasePostData(
             userInfo!!.id, data.title!!, data.content!!, timeStamp, data.km!!, userInfo.nickName
         )
         viewModelScope.launch {
             val result = repository.writePost(postData)
-            postLiveData.value = result
+            postLiveData.postValue(MainStatus.MainSuccess(result))
         }
 
     }
 
-
+    sealed class MainStatus {
+        object MainLoading : MainStatus()
+        data class MainSuccess(val data: Any) : MainStatus()
+        data class MainError(val message: String) : MainStatus()
+    }
 }
