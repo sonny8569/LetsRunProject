@@ -1,5 +1,6 @@
 package com.sungil.runningproejct_mvvm.main.bottomSheet
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,34 +46,37 @@ class PostSnsBottomSheet(val value: (PostSnsBottomSheet) -> Unit) : BottomSheetD
             val title = binding.txtContentTitle.text.toString().trim()
             val content = binding.txtContent.text.toString().trim()
             val km = binding.txtKm.text.toString().trim()
+            when {
+                title.isEmpty() -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.msg_check_content),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-            if (title == "") {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.msg_check_content),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
+                content.isEmpty() -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.msg_check_content),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                km.isEmpty() -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.msg_check_km),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                else -> {
+                    val postData = PostSnsBottomSheet(title, content, km)
+                    value(postData)
+                    dialog?.dismiss()
+                }
             }
-            if (content == "") {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.msg_check_content),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-            if (km == "") {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.msg_check_km),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-            val postData = PostSnsBottomSheet(title, content, km)
-            value(postData)
-            dialog?.dismiss()
         }
     }
 
