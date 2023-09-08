@@ -8,7 +8,6 @@ import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.publishOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -46,12 +45,12 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
                 followerLiveData.postValue(MainStatus.MainSuccess("Success to get Follower Please Wait"))
                 follower.addAll(it)
                 follower.add(data.id)
-                requestFollowerPost()
+                clickFollower()
             }
         }
     }
 
-    fun requestFollowerPost() {
+    fun clickFollower() {
         postData.postValue(MainStatus.MainLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val followerPost = repository.getFollowerPost(follower)
@@ -65,7 +64,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         }
     }
 
-    fun requestUnFollowerPost() {
+    fun clickUnFollower() {
         postData.postValue(MainStatus.MainLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val unFollowerPostData = repository.getUnFollowerPost(follower)
