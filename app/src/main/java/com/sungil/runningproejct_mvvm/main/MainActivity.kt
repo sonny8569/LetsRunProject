@@ -3,8 +3,8 @@ package com.sungil.runningproejct_mvvm.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this)[MainViewModel::class.java]
+    private val viewModel: MainViewModel by viewModels()
+    private val postAdapter by lazy{
+        PostAdapter()
     }
-    private val postAdapter = PostAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +47,13 @@ class MainActivity : AppCompatActivity() {
         binding.txtMySns.setOnClickListener {
             binding.txtOtherSns.setTextColor(getColor(R.color.gray))
             binding.txtMySns.setTextColor(getColor(R.color.white))
-            viewModel.requestFollowerPost()
+            viewModel.clickFollower()
         }
 
         binding.txtOtherSns.setOnClickListener {
             binding.txtMySns.setTextColor(getColor(R.color.gray))
             binding.txtOtherSns.setTextColor(getColor(R.color.white))
-            viewModel.requestUnFollowerPost()
+            viewModel.clickUnFollower()
         }
 
 
