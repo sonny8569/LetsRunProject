@@ -59,15 +59,15 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.followerLiveData.observe(this, Observer { followerStatus ->
             when (followerStatus) {
-                is MainViewModel.MainStatus.MainLoading -> {
+                is MainViewModel.ViewStatus.ViewLoading -> {
                     Timber.d("Loading for get Follower")
                 }
 
-                is MainViewModel.MainStatus.MainSuccess -> {
+                is MainViewModel.ViewStatus.ViewSuccess -> {
                     Timber.d("Success to get Follower get Follower Post")
                 }
 
-                is MainViewModel.MainStatus.MainError -> {
+                is MainViewModel.ViewStatus.ViewError -> {
                     Timber.e("ERROR to get Follower")
                     Toast.makeText(this, "The Follower is Empty", Toast.LENGTH_SHORT).show()
                 }
@@ -78,17 +78,17 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.postData.observe(this, Observer { postStatus ->
             when (postStatus) {
-                is MainViewModel.MainStatus.MainLoading -> {
+                is MainViewModel.ViewStatus.ViewLoading -> {
                     Timber.d("Loading for get Post Data")
                 }
 
-                is MainViewModel.MainStatus.MainSuccess -> {
+                is MainViewModel.ViewStatus.ViewSuccess -> {
                     Timber.d("The Follower Post is Come")
                     val postData = postStatus.data as ArrayList<FirebasePostData>
                     postAdapter.data = postData
                 }
 
-                is MainViewModel.MainStatus.MainError -> {
+                is MainViewModel.ViewStatus.ViewError -> {
                     Timber.d("The Follower post Data is Null")
                     Toast.makeText(
                         this,
@@ -103,16 +103,16 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.setFollowerLiveData.observe(this, Observer { followerStatus ->
             when (followerStatus) {
-                is MainViewModel.MainStatus.MainLoading -> {
+                is MainViewModel.ViewStatus.ViewLoading -> {
                     Timber.d("Loading for get Follow the User")
                 }
 
-                is MainViewModel.MainStatus.MainSuccess -> {
+                is MainViewModel.ViewStatus.ViewSuccess -> {
                     val userId = followerStatus.data as String
                     Toast.makeText(this, "Success to Follower $userId", Toast.LENGTH_SHORT).show()
                 }
 
-                is MainViewModel.MainStatus.MainError -> {
+                is MainViewModel.ViewStatus.ViewError -> {
                     val message = followerStatus.message
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 }
@@ -132,16 +132,16 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.postLiveData.observe(this, Observer { postStatus ->
             when (postStatus) {
-                is MainViewModel.MainStatus.MainLoading -> {
+                is MainViewModel.ViewStatus.ViewLoading -> {
                     Timber.d("Loading for post Data")
                 }
 
-                is MainViewModel.MainStatus.MainSuccess -> {
+                is MainViewModel.ViewStatus.ViewSuccess -> {
                     Toast.makeText(this, "${postStatus.data} to Post Data", Toast.LENGTH_SHORT)
                         .show()
                 }
 
-                is MainViewModel.MainStatus.MainError -> {
+                is MainViewModel.ViewStatus.ViewError -> {
                     Timber.d("Error to Post Data")
                     Toast.makeText(this, "ERROR to Post Data", Toast.LENGTH_SHORT).show()
                 }
