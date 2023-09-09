@@ -4,89 +4,118 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
-import androidx.lifecycle.ViewModel
+import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.repository.MainRepository
-import com.sungil.runningproejct_mvvm.utill.ListenerMessage
-import com.sungil.runningproejct_mvvm.utill.RepositoryListener
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 //MainViewModel inject
 @HiltViewModel
-class MainViewModel @Inject constructor  (private val repository: MainRepository ): ViewModel()  {
-    //repository
-    var wearLiveData = repository.getRunningRoomDB()
+class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
 
-    var followerLiveData = MutableLiveData<List<String>>()
+    var postData = MutableLiveData<ViewStatus>()
 
-    var followerPostLiveData = repository.getFollowerPostLiveData()
-
-    var unFollowerPostLiveData = repository.getUnFollowerPostLiveData()
-
-    var setFollowerLiveData = repository.getSetFollowerLiveData()
+    var setFollowerLiveData = MutableLiveData<ViewStatus>()
 
     private var follower = ArrayList<String>()
 
-    val postLiveData = MutableLiveData<String>()
+    val postLiveData = MutableLiveData<ViewStatus>()
 
-    fun getFollower() = viewModelScope.launch(Dispatchers.IO) {
+    var followerLiveData :MutableLiveData<ViewStatus> = MutableLiveData()
+
+    init {
+        getFollower()
+    }
+
+    private fun getFollower() {
         val data = repository.getUserInfo()
-        if (data != null) {
+        if (data == null) {
+            followerLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is Null"))
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
             val followers = repository.getFollower(data.id)
             followers.collect {
+                if (it.isEmpty()) {
+                    followerLiveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
+                    return@collect
+                }
+                followerLiveData.postValue(ViewStatus.ViewSuccess("Success to get Follower Please Wait"))
                 follower.addAll(it)
-                getFollowerPost()
+                follower.add(data.id)
+                clickFollower()
             }
         }
     }
 
-    fun getFollowerPost() {
-        repository.getFollowerPost(follower)
+    fun clickFollower() {
+        postData.postValue(ViewStatus.ViewLoading)
+        viewModelScope.launch(Dispatchers.IO) {
+            val followerPost = repository.getFollowerPost(follower)
+            followerPost.collect {
+                if (it.isEmpty()) {
+                    postData.postValue(ViewStatus.ViewError("The Follower Post is Null"))
+                    return@collect
+                }
+                postData.postValue(ViewStatus.ViewSuccess(it))
+            }
+        }
     }
 
-    fun getUnFollowerPost() {
-        repository.getUnFollowerPost(follower)
+    fun clickUnFollower() {
+        postData.postValue(ViewStatus.ViewLoading)
+        viewModelScope.launch(Dispatchers.IO) {
+            val unFollowerPostData = repository.getUnFollowerPost(follower)
+            unFollowerPostData.collect {
+                if (it.size == 0) {
+                    postData.postValue(ViewStatus.ViewError("The Data is Null"))
+                }
+                postData.postValue(ViewStatus.ViewSuccess(it))
+            }
+        }
     }
 
-    fun writeNewFollower(userId : String){
-        val data = repository.getUserInfo() ?: return
-        if(follower.contains(userId)){
-            Timber.e("Already Follower User")
+    fun writeNewFollower(userId: String) {
+        val data = repository.getUserInfo()
+        if (data == null) {
+            setFollowerLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is null"))
             return
         }
-        repository.setNewFollower(userId , data.id)
-    }
-    fun setFollower(followers : ArrayList<String>){
-        this.follower = followers
-    }
-
-    fun postSns() = viewModelScope.launch(Dispatchers.IO) {
-
-        val userInfo = repository.getUserInfo()
-        var data = FirebasePostData(
-            userInfo!!.id, "test2입니다", "test2", 1692804242263, "123km", userInfo.nickName
-        )
-
-        val result = repository.writePost(data)
-        result.collect {
-            postLiveData.postValue(it)
+        if (follower.contains(userId)) {
+            Timber.e("Already Follower User")
+            setFollowerLiveData.postValue(ViewStatus.ViewError("Already Follower user"))
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.setNewFollower(userId, data.id)
+            result.collect {
+                if (it == "Success") {
+                    follower.add(userId)
+                }
+                setFollowerLiveData.postValue(ViewStatus.ViewSuccess(it))
+            }
         }
     }
 
-import javax.inject.Inject
 
-@HiltViewModel
-class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() , RepositoryListener {
-    val wearLiveData get() = repository.getRunningRoomDB()
-    //repository
-    override fun onMessageSuccess(data: ListenerMessage) {
-        TODO("Not yet implemented")
+    fun postSns(data: PostSnsBottomSheet, timeStamp: Long) {
+        postData.value = ViewStatus.ViewLoading
+        val userInfo = repository.getUserInfo()
+        val postData = FirebasePostData(
+            userInfo!!.id, data.title!!, data.content!!, timeStamp, data.km!!, userInfo.nickName
+        )
+        viewModelScope.launch {
+            val result = repository.writePost(postData)
+            postLiveData.postValue(ViewStatus.ViewSuccess(result))
+        }
+
     }
 
-    override fun onMessageFail(data: ListenerMessage) {
-        TODO("Not yet implemented")
+    sealed class ViewStatus {
+        object ViewLoading : ViewStatus()
+        data class ViewSuccess(val data: Any) : ViewStatus()
+        data class ViewError(val message: String) : ViewStatus()
     }
-
 }

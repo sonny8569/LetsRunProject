@@ -1,12 +1,11 @@
 package com.sungil.runningproejct_mvvm.login.viewModel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
@@ -17,7 +16,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * 회원가입 viewModel
+ * 회원가입 viewModel Hilt 적용
  */
 @HiltViewModel
 class SignUpViewModel @Inject constructor (private val repository: LoginRepository , private val context : Application) : ViewModel() , RepositoryListener{

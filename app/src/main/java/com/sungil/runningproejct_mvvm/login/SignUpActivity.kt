@@ -10,7 +10,7 @@ import com.google.firebase.BuildConfig
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivitySignUpBinding
 import com.sungil.runningproejct_mvvm.login.viewModel.SignUpViewModel
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -21,7 +21,7 @@ import timber.log.Timber
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivitySignUpBinding
-
+    //회원가입 ViewModel Hilt 적용 
     private val viewModel : SignUpViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

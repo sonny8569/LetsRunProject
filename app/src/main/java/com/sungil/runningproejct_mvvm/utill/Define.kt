@@ -23,6 +23,9 @@ class Define {
         const val PROP_DATA_NULL = "dataNull"
         const val PROP_SAVE_USERINFO = "userInfo"
 
+        //RoomDatabase
+        const val WEAR_RUNNING_TABLE = "runningTable"
+        const val USERINFO_TABLE = "userInfoTable"
     }
     enum class Status {
         LOADING ,

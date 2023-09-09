@@ -3,8 +3,8 @@ package com.sungil.runningproejct_mvvm.login.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sungil.runningproejct_mvvm.`object`.LoginData
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.LoginData
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Login viewModel
+ * Login viewModel Hilt 적용
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor (private val repository: LoginRepository) : ViewModel(), RepositoryListener {

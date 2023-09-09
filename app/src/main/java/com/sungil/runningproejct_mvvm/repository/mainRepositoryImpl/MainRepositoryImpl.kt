@@ -12,30 +12,25 @@ import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
 import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
 import com.sungil.runningproejct_mvvm.repository.MainRepository
+import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
 import com.sungil.runningproejct_mvvm.utill.Define
-import com.sungil.runningproejct_mvvm.useCase.UseCase
+import com.sungil.runningproejct_mvvm.useCase.GetFollowerUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import android.content.Context
-import androidx.lifecycle.LiveData
-import com.sungil.runningproejct_mvvm.appDatabase.AppDatabase
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
-import com.sungil.runningproejct_mvvm.repository.MainRepository
-import javax.inject.Inject
 
 //MainRepo hilt  적용
-class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao , private val userDao : UserInfoDao , private val useCase : UseCase) : MainRepository {
+class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDao, private val userDao : UserInfoDao, private val getFollowerUseCase : GetFollowerUseCase, private val unFollowerUseCase : GetUnFollowerUseCase) : MainRepository {
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
-    
-    override fun getRunningRoomDB(): LiveData<WearRunDataDBM?> {
+
+    override fun getRunningData(): LiveData<WearRunDataDBM?> {
         return wearRoomData.getRunningData()
     }
 
@@ -65,20 +60,14 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
 
     override fun getFollowerPost(follower: ArrayList<String>) : Flow<ArrayList<FirebasePostData>> = flow {
         val followerUrl = Define.FIREBASE_SNS
-        val followerPostData = suspendCoroutine<ArrayList<FirebasePostData>>{
-            database.getReference(followerUrl).addValueEventListener(object  :
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val followerPost = useCase.getFollowerData(snapshot , follower)
-                    it.resume(followerPost)
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    Timber.e("Error to get FollowerPost :$error")
-                    it.resumeWithException(error.toException())
-                }
-            })
+        try {
+            val snapshot = database.getReference(followerUrl).get().await() // Using await() to get a snapshot
+            val followerPost = getFollowerUseCase.getFollowerData(snapshot, follower)
+            emit(followerPost)
+        } catch (e: Exception) {
+            Timber.e("Error to get FollowerPost: $e")
+            throw e
         }
-        emit(followerPostData)
     }
 
     override fun getUnFollowerPost(follower: ArrayList<String>): Flow<ArrayList<FirebasePostData>> = flow {
@@ -87,7 +76,7 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
             database.getReference(followerUrl).addValueEventListener(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val unFollowerPost = useCase.getUnFollowerData(snapshot, follower)
+                    val unFollowerPost =  unFollowerUseCase.getUnFollowerData(snapshot, follower)
                     it.resume(unFollowerPost)
                 }
 
@@ -117,20 +106,20 @@ class MainRepositoryImpl @Inject constructor(private val wearRoomData: RunningDa
         emit(setFollowerResult)
     }
 
-    override  fun writePost(data: FirebasePostData): Flow<String> = flow  {
-        val snsPostUrl = Define.FIREBASE_SNS_test
+    override suspend fun writePost(data: FirebasePostData): String {
+        val snsPostUrl = Define.FIREBASE_SNS+ "/" + data.writer
         val snsPostRef = database.getReference(snsPostUrl)
+        var resultString = ""
 
-        val result = suspendCoroutine<String> { continuation ->
-            snsPostRef.setValue(data).addOnSuccessListener {
-                Timber.d("Success to Post Data")
-                continuation.resume("Success")
-            }.addOnFailureListener {
-                Timber.e("ERROR to Post Data")
-                continuation.resume("error")
-            }
-        }
+        snsPostRef.setValue(data).addOnSuccessListener {
+            Timber.d("Success to Post Data")
+            resultString = "success"
+        }.addOnFailureListener {
+            Timber.e("ERROR to Post Data")
+            resultString = "error To Write Post"
+        }.await()
 
-        emit(result)
-    }.flowOn(Dispatchers.IO)
+        return resultString
+    }
+
 }

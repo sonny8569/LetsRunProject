@@ -8,100 +8,160 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
+import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
+import com.sungil.runningproejct_mvvm.main.bottomSheet.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
-import com.sungil.runningproejct_mvvm.utill.AdapterClickListener
+import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
-import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
-
-    //viewModel hilt 적용
-    private val viewModel : MainViewModel by viewModels()
-    private val postAdapter = PostAdapter()
+    private lateinit var binding: ActivityMainBinding
 
 
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
+    private val postAdapter by lazy{
+        PostAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
-        initFollower()
         addListener()
     }
 
-    private fun initView(){
-        val layoutManger : RecyclerView.LayoutManager = LinearLayoutManager(this)
+    private fun initView() {
+        val layoutManger: RecyclerView.LayoutManager = LinearLayoutManager(this)
         binding.recyclerviewContent.layoutManager = layoutManger
         binding.txtOtherSns.setTextColor(getColor(R.color.gray))
     }
 
-    private fun initFollower(){
-        viewModel.getFollower()
-        binding.txtOtherSns.setTextColor(getColor(R.color.gray))
-    }
-
-    private fun addListener(){
-        viewModel.wearLiveData.observe(this , Observer {
-            val data = it ?: return@Observer
-            Timber.d("The Data is Comming $data")
-        })
-
+    private fun addListener() {
 
         binding.txtMySns.setOnClickListener {
             binding.txtOtherSns.setTextColor(getColor(R.color.gray))
             binding.txtMySns.setTextColor(getColor(R.color.white))
-            viewModel.getFollowerPost()
+            viewModel.clickFollower()
         }
 
         binding.txtOtherSns.setOnClickListener {
             binding.txtMySns.setTextColor(getColor(R.color.gray))
             binding.txtOtherSns.setTextColor(getColor(R.color.white))
-            viewModel.getUnFollowerPost()
+            viewModel.clickUnFollower()
         }
 
-        viewModel.followerLiveData.observe(this  , Observer {
-            Timber.d("The Follower is Come")
-            val follower = ArrayList<String>()
-            follower.addAll(it)
-            for(item in follower){
-                Timber.e("Follower : $item")
+
+        viewModel.followerLiveData.observe(this, Observer { followerStatus ->
+            when (followerStatus) {
+                is MainViewModel.ViewStatus.ViewLoading -> {
+                    Timber.d("Loading for get Follower")
+                }
+
+                is MainViewModel.ViewStatus.ViewSuccess -> {
+                    Timber.d("Success to get Follower get Follower Post")
+                }
+
+                is MainViewModel.ViewStatus.ViewError -> {
+                    Timber.e("ERROR to get Follower")
+                    Toast.makeText(this, "The Follower is Empty", Toast.LENGTH_SHORT).show()
+                }
             }
-            viewModel.setFollower(follower)
-            viewModel.getFollowerPost()
+
         })
 
-        viewModel.followerPostLiveData.observe(this, Observer {
-            Timber.d("The Follower Post is Come")
-            postAdapter.data = it
+
+        viewModel.postData.observe(this, Observer { postStatus ->
+            when (postStatus) {
+                is MainViewModel.ViewStatus.ViewLoading -> {
+                    Timber.d("Loading for get Post Data")
+                }
+
+                is MainViewModel.ViewStatus.ViewSuccess -> {
+                    Timber.d("The Follower Post is Come")
+                    val postData = postStatus.data as ArrayList<FirebasePostData>
+                    postAdapter.data = postData
+                }
+
+                is MainViewModel.ViewStatus.ViewError -> {
+                    Timber.d("The Follower post Data is Null")
+                    Toast.makeText(
+                        this,
+                        "the Follower Post is Null Please Check The Data",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         })
 
-        viewModel.unFollowerPostLiveData.observe( this , Observer {
-            Timber.d("The UnFollower Post is Come")
-            postAdapter.data = it
-        })
         binding.recyclerviewContent.adapter = postAdapter
-        viewModel.setFollowerLiveData.observe(this, Observer {
-            if (it == "") {
-                Toast.makeText(this, "ERROR to Follower User : $it", Toast.LENGTH_SHORT).show()
-                return@Observer
+
+        viewModel.setFollowerLiveData.observe(this, Observer { followerStatus ->
+            when (followerStatus) {
+                is MainViewModel.ViewStatus.ViewLoading -> {
+                    Timber.d("Loading for get Follow the User")
+                }
+
+                is MainViewModel.ViewStatus.ViewSuccess -> {
+                    val userId = followerStatus.data as String
+                    Toast.makeText(this, "Success to Follower $userId", Toast.LENGTH_SHORT).show()
+                }
+
+                is MainViewModel.ViewStatus.ViewError -> {
+                    val message = followerStatus.message
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
             }
-            Toast.makeText(this , "Success to Follower User :$it",Toast.LENGTH_SHORT).show()
         })
-        postAdapter.setOnClickListener(object : AdapterClickListener{
+
+        postAdapter.setOnClickListener(object : SetOnClickListener {
             override fun onValueClick(data: String) {
-            viewModel.writeNewFollower(data)
                 Timber.d("user Select Follower $data")
+                viewModel.writeNewFollower(data)
             }
         })
+
+        binding.btnPostSns.setOnClickListener {
+            setPostSnsBottomSheet()
         }
+
+        viewModel.postLiveData.observe(this, Observer { postStatus ->
+            when (postStatus) {
+                is MainViewModel.ViewStatus.ViewLoading -> {
+                    Timber.d("Loading for post Data")
+                }
+
+                is MainViewModel.ViewStatus.ViewSuccess -> {
+                    Toast.makeText(this, "${postStatus.data} to Post Data", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is MainViewModel.ViewStatus.ViewError -> {
+                    Timber.d("Error to Post Data")
+                    Toast.makeText(this, "ERROR to Post Data", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+    }
+
+    private fun setPostSnsBottomSheet() {
+        val bottomSheet: PostSnsBottomSheet = PostSnsBottomSheet {
+            if (it.content == null) {
+                return@PostSnsBottomSheet
+            }
+            viewModel.postSns(it, getCurrentTimeInMillis())
+            Toast.makeText(this, getString(R.string.msg_post_sns), Toast.LENGTH_SHORT).show()
+        }
+        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+    }
+
+    private fun getCurrentTimeInMillis(): Long {
+        return System.currentTimeMillis()
     }
 }

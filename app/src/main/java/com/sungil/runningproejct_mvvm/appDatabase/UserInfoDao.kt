@@ -5,23 +5,13 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.sungil.runningproejct_mvvm.`object`.UserInfo
-import com.sungil.runningproejct_mvvm.`object`.UserInfoDBM
+import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.runningproejct_mvvm.utill.Define
+
 @Dao
 interface UserInfoDao {
 
     @Insert
-    fun insert(data : UserInfo)
-
-    @Delete
-    fun delete(data : UserInfo)
-
-    @Update
-    fun update(data : UserInfo)
-
-    @Query("SELECT * FROM ${AppDatabase.USERINFO_TABLE}")
-    fun getUserInfo() : UserInfo?
-  
     fun insert(data : UserInfoDBM)
 
     @Delete
@@ -30,6 +20,6 @@ interface UserInfoDao {
     @Update
     fun update(data : UserInfoDBM)
 
-    @Query("SELECT * FROM ${AppDatabase.USERINFO_TABLE}")
+    @Query("SELECT * FROM ${Define.USERINFO_TABLE}")
     fun getUserInfo() : UserInfoDBM?
 }

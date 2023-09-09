@@ -6,12 +6,14 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.sungil.runningproejct_mvvm.`object`.WearRunDataDBM
-//running data 추가
+import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
+import com.sungil.runningproejct_mvvm.utill.Define
+
+//running data
 @Dao
 interface RunningDao {
 
-    @Query("SELECT * FROM ${AppDatabase.WEAR_RUNNING_TABLE}")
+    @Query("SELECT * FROM ${Define.WEAR_RUNNING_TABLE}")
     fun getRunningData () : LiveData<WearRunDataDBM?>
 
     @Insert
