@@ -15,107 +15,89 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
 
-    var postData = MutableLiveData<ViewStatus>()
-
-    var setFollowerLiveData = MutableLiveData<ViewStatus>()
-
     private var follower = ArrayList<String>()
 
-    val postLiveData = MutableLiveData<ViewStatus>()
-
-    var followerLiveData :MutableLiveData<ViewStatus> = MutableLiveData()
+    var liveData = MutableLiveData<ViewStatus>()
 
     init {
         getFollower()
     }
 
     private fun getFollower() {
+        liveData.value = ViewStatus.ViewLoading
         val data = repository.getUserInfo()
         if (data == null) {
-            followerLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is Null"))
+            liveData.postValue(ViewStatus.ViewError("ERROR The User Data is Null"))
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
             val followers = repository.getFollower(data.id)
-            followers.collect {
-                if (it.isEmpty()) {
-                    followerLiveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
-                    return@collect
-                }
-                followerLiveData.postValue(ViewStatus.ViewSuccess("Success to get Follower Please Wait"))
-                follower.addAll(it)
-                follower.add(data.id)
-                clickFollower()
+            if (followers.isEmpty()) {
+                liveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
+                return@launch
             }
+            liveData.postValue(ViewStatus.FollowerLiveData("Success to get Follower Please Wait"))
+            follower.addAll(followers)
+            follower.add(data.id)
+            clickFollower()
         }
     }
 
     fun clickFollower() {
-        postData.postValue(ViewStatus.ViewLoading)
+        liveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val followerPost = repository.getFollowerPost(follower)
-            followerPost.collect {
-                if (it.isEmpty()) {
-                    postData.postValue(ViewStatus.ViewError("The Follower Post is Null"))
-                    return@collect
-                }
-                postData.postValue(ViewStatus.ViewSuccess(it))
-            }
+            liveData.postValue(ViewStatus.PostDataLiveData(followerPost))
         }
     }
 
     fun clickUnFollower() {
-        postData.postValue(ViewStatus.ViewLoading)
+        liveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val unFollowerPostData = repository.getUnFollowerPost(follower)
-            unFollowerPostData.collect {
-                if (it.size == 0) {
-                    postData.postValue(ViewStatus.ViewError("The Data is Null"))
-                }
-                postData.postValue(ViewStatus.ViewSuccess(it))
-            }
+            liveData.postValue(ViewStatus.PostDataLiveData(unFollowerPostData))
         }
     }
 
     fun writeNewFollower(userId: String) {
+        liveData.postValue(ViewStatus.ViewLoading)
         val data = repository.getUserInfo()
         if (data == null) {
-            setFollowerLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is null"))
+            liveData.postValue(ViewStatus.ViewError("ERROR The User Data is null"))
             return
         }
         if (follower.contains(userId)) {
             Timber.e("Already Follower User")
-            setFollowerLiveData.postValue(ViewStatus.ViewError("Already Follower user"))
+            liveData.postValue(ViewStatus.ViewError("Already Follower user"))
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.setNewFollower(userId, data.id)
-            result.collect {
-                if (it == "Success") {
-                    follower.add(userId)
-                }
-                setFollowerLiveData.postValue(ViewStatus.ViewSuccess(it))
-            }
+            liveData.postValue(ViewStatus.SetNewFollowerLiveData(result))
         }
     }
 
 
     fun postSns(data: PostSnsBottomSheet, timeStamp: Long) {
-        postData.value = ViewStatus.ViewLoading
+        liveData.postValue(ViewStatus.ViewLoading)
         val userInfo = repository.getUserInfo()
         val postData = FirebasePostData(
             userInfo!!.id, data.title!!, data.content!!, timeStamp, data.km!!, userInfo.nickName
         )
         viewModelScope.launch {
             val result = repository.writePost(postData)
-            postLiveData.postValue(ViewStatus.ViewSuccess(result))
+            liveData.postValue(ViewStatus.SendPostLiveData(result))
         }
 
     }
 
     sealed class ViewStatus {
         object ViewLoading : ViewStatus()
-        data class ViewSuccess(val data: Any) : ViewStatus()
+
+        data class FollowerLiveData(val data: String) : ViewStatus()
+        data class SetNewFollowerLiveData(val data: String) : ViewStatus()
+        data class PostDataLiveData(val data: ArrayList<FirebasePostData>) : ViewStatus()
+        data class SendPostLiveData(val data: String) : ViewStatus()
         data class ViewError(val message: String) : ViewStatus()
     }
 }
