@@ -21,6 +21,12 @@
     <string name="txt_the_other">다른 사람 개시물</string>
     <string name="btn_post_sns">게시물 쓰기</string>
 
+    <!--Rate Activity-->
+    <string name="txt_rate_title">자 이제 달려 볼까요?</string>
+    <string name="btn_rate">측정 하기</string>
+    <string name="btn_stop_rate">그만 하기</string>
+    <string name="txt_rate_start">--</string>
+
     <!--BottomSheet    -->
     <string name="txt_post_title">게시물 올리기</string>
     <string name="txt_post_content">내용</string>
@@ -43,4 +49,5 @@
     <string name="msg_check_km">km을 입력해 주세요</string>
     <string name="msg_check_gps">장소를 입력해 주세요</string>
     <string name="msg_post_sns">게시물을 올리고 있습니다.</string>
+    <string name="msg_agree_permission">Please agree the permission </string>
 </resources>

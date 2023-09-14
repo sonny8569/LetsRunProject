@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -13,6 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RunningProejct_MVVM"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.API_KEY"
+            android:value="AIzaSyD4ECyZ3iElL3ZxJa2aJyQCpAPhKJQhyKc"/>
+
         <activity
             android:name=".login.LoginActivity"
             android:exported="true">
@@ -23,11 +33,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".login.SignUpActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".login.SignUpActivity"
+            android:exported="true" />
 
-        <activity android:name=".main.MainActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".main.MainActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".activityRate.ActivityRate"
+            android:exported="true" />
 
     </application>
 

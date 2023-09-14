@@ -9,8 +9,7 @@ import com.sungil.runningproejct_mvvm.utill.Define
 )
 //wear 에서 올 데이터
  class WearRunDataDBM(
-    val runData : String,
-    val time : String
+    val runData : String
 ){
      @PrimaryKey(autoGenerate = true)
      var id : Int = 0
