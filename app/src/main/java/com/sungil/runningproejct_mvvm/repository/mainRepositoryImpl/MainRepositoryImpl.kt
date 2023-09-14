@@ -1,6 +1,5 @@
 package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 
-import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
@@ -18,7 +17,7 @@ import kotlinx.coroutines.tasks.await
 
 //MainRepo hilt  적용
 class MainRepositoryImpl @Inject constructor(
-    private val wearRoomData: RunningDao,
+    private val runningDao: RunningDao,
     private val userDao: UserInfoDao,
     private val getFollowerUseCase: GetFollowerUseCase,
     private val unFollowerUseCase: GetUnFollowerUseCase,
@@ -80,6 +79,10 @@ class MainRepositoryImpl @Inject constructor(
         }.await()
 
         return resultString
+    }
+
+    override fun getRunningData(): WearRunDataDBM? {
+        return runningDao.getRunningData()
     }
 
 }

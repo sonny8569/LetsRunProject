@@ -15,6 +15,7 @@ import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
 import com.sungil.runningproejct_mvvm.main.bottomSheet.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
+import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val postAdapter by lazy {
         PostAdapter()
     }
+
     private val requestPermissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         val allPermissionsGranted = permissions.all { it.value }
         if (allPermissionsGranted) {
@@ -93,10 +95,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Success to Post Data", Toast.LENGTH_SHORT).show()
                 }
 
+
                 is MainViewModel.ViewStatus.ViewError -> {
                     Timber.e("ERROR")
                     Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                 }
+
             }
         })
 
@@ -125,6 +129,8 @@ class MainActivity : AppCompatActivity() {
             viewModel.postSns(it, getCurrentTimeInMillis())
             Toast.makeText(this, getString(R.string.msg_post_sns), Toast.LENGTH_SHORT).show()
         }
+        val bundle = Bundle()
+        bundle.putString(Define.KM_KEY , viewModel.getRunningData())
         bottomSheet.show(supportFragmentManager, bottomSheet.tag)
     }
 
@@ -142,5 +148,10 @@ class MainActivity : AppCompatActivity() {
     private fun getRateActivity() {
         val intent = Intent(this, ActivityRate::class.java)
         startActivity(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.checkRunningData()
     }
 }

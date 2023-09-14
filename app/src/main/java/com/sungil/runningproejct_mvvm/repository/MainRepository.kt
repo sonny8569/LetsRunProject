@@ -17,4 +17,6 @@ interface MainRepository {
     suspend fun getUnFollowerPost(follower: ArrayList<String>): ArrayList<FirebasePostData>
     suspend fun setNewFollower(userId: String, myId: String): String
     suspend fun writePost(data: FirebasePostData): String
+
+    fun getRunningData() : WearRunDataDBM?
 }

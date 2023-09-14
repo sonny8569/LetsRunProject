@@ -1,5 +1,6 @@
 package com.sungil.runningproejct_mvvm.main.viewModel
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
 
     var liveData = MutableLiveData<ViewStatus>()
 
+    private var runningData : String = "0km"
     init {
         getFollower()
     }
@@ -91,6 +93,17 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
 
     }
 
+    fun checkRunningData() {
+        liveData.postValue(ViewStatus.ViewLoading)
+        val data = repository.getRunningData()
+        if(data != null) {
+            runningData=  data.runData+"km"
+        }
+    }
+
+    fun getRunningData(): String {
+        return runningData
+    }
     sealed class ViewStatus {
         object ViewLoading : ViewStatus()
 
@@ -98,6 +111,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         data class SetNewFollowerLiveData(val data: String) : ViewStatus()
         data class PostDataLiveData(val data: ArrayList<FirebasePostData>) : ViewStatus()
         data class SendPostLiveData(val data: String) : ViewStatus()
+
         data class ViewError(val message: String) : ViewStatus()
     }
 }
