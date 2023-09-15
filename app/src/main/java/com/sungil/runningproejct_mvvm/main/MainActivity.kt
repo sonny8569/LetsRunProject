@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.clickUnFollower()
         }
 
-        viewModel.liveData.observe(this, Observer {
+        viewModel.viewStateLiveData.observe(this, Observer {
             when (it) {
                 is MainViewModel.ViewStatus.ViewLoading -> {
                     Timber.d("Loading.....")

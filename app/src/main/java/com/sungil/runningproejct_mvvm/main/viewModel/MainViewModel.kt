@@ -1,5 +1,6 @@
 package com.sungil.runningproejct_mvvm.main.viewModel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,27 +18,29 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
 
     private var follower = ArrayList<String>()
 
-    var liveData = MutableLiveData<ViewStatus>()
+    private var _viewStateLiveData = MutableLiveData<ViewStatus>()
+    val viewStateLiveData: LiveData<ViewStatus> get() = _viewStateLiveData
 
-    private var runningData : String = "0km"
+    private var runningData: String = "0km"
+
     init {
         getFollower()
     }
 
     private fun getFollower() {
-        liveData.value = ViewStatus.ViewLoading
+        _viewStateLiveData.value = ViewStatus.ViewLoading
         val data = repository.getUserInfo()
         if (data == null) {
-            liveData.postValue(ViewStatus.ViewError("ERROR The User Data is Null"))
+            _viewStateLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is Null"))
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
             val followers = repository.getFollower(data.id)
             if (followers.isEmpty()) {
-                liveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
+                _viewStateLiveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
                 return@launch
             }
-            liveData.postValue(ViewStatus.Follower("Success to get Follower Please Wait"))
+            _viewStateLiveData.postValue(ViewStatus.Follower("Success to get Follower Please Wait"))
             follower.addAll(followers)
             follower.add(data.id)
             clickFollower()
@@ -45,64 +48,65 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     }
 
     fun clickFollower() {
-        liveData.postValue(ViewStatus.ViewLoading)
+        _viewStateLiveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val followerPost = repository.getFollowerPost(follower)
-            liveData.postValue(ViewStatus.PostData(followerPost))
+            _viewStateLiveData.postValue(ViewStatus.PostData(followerPost))
         }
     }
 
     fun clickUnFollower() {
-        liveData.postValue(ViewStatus.ViewLoading)
+        _viewStateLiveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val unFollowerPostData = repository.getUnFollowerPost(follower)
-            liveData.postValue(ViewStatus.PostData(unFollowerPostData))
+            _viewStateLiveData.postValue(ViewStatus.PostData(unFollowerPostData))
         }
     }
 
     fun writeNewFollower(userId: String) {
-        liveData.postValue(ViewStatus.ViewLoading)
+        _viewStateLiveData.postValue(ViewStatus.ViewLoading)
         val data = repository.getUserInfo()
         if (data == null) {
-            liveData.postValue(ViewStatus.ViewError("ERROR The User Data is null"))
+            _viewStateLiveData.postValue(ViewStatus.ViewError("ERROR The User Data is null"))
             return
         }
         if (follower.contains(userId)) {
             Timber.e("Already Follower User")
-            liveData.postValue(ViewStatus.ViewError("Already Follower user"))
+            _viewStateLiveData.postValue(ViewStatus.ViewError("Already Follower user"))
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.setNewFollower(userId, data.id)
-            liveData.postValue(ViewStatus.SetNewFollower(result))
+            _viewStateLiveData.postValue(ViewStatus.SetNewFollower(result))
         }
     }
 
 
     fun postSns(data: PostSnsBottomSheet, timeStamp: Long) {
-        liveData.postValue(ViewStatus.ViewLoading)
+        _viewStateLiveData.postValue(ViewStatus.ViewLoading)
         val userInfo = repository.getUserInfo()
         val postData = FirebasePostData(
             userInfo!!.id, data.title!!, data.content!!, timeStamp, data.km!!, userInfo.nickName
         )
         viewModelScope.launch {
             val result = repository.writePost(postData)
-            liveData.postValue(ViewStatus.SendPost(result))
+            _viewStateLiveData.postValue(ViewStatus.SendPost(result))
         }
 
     }
 
     fun checkRunningData() {
-        liveData.postValue(ViewStatus.ViewLoading)
+        _viewStateLiveData.postValue(ViewStatus.ViewLoading)
         val data = repository.getRunningData()
-        if(data != null) {
-            runningData=  data.runData+"km"
+        if (data != null) {
+            runningData = data.runData + "km"
         }
     }
 
     fun getRunningData(): String {
         return runningData
     }
+
     sealed class ViewStatus {
         object ViewLoading : ViewStatus()
 
