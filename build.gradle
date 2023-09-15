@@ -21,4 +21,6 @@ ext {
     fragment_ktx = "1.6.1"
     hilt_version = '2.44'
     gson = '2.10.1'
+    googleMap = '18.1.0'
+    locationLib ='19.0.1'
 }
