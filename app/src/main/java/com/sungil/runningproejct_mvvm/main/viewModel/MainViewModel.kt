@@ -1,6 +1,5 @@
 package com.sungil.runningproejct_mvvm.main.viewModel
 
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,7 +37,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
                 liveData.postValue(ViewStatus.ViewError("The Follower is Empty"))
                 return@launch
             }
-            liveData.postValue(ViewStatus.FollowerLiveData("Success to get Follower Please Wait"))
+            liveData.postValue(ViewStatus.Follower("Success to get Follower Please Wait"))
             follower.addAll(followers)
             follower.add(data.id)
             clickFollower()
@@ -49,7 +48,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         liveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val followerPost = repository.getFollowerPost(follower)
-            liveData.postValue(ViewStatus.PostDataLiveData(followerPost))
+            liveData.postValue(ViewStatus.PostData(followerPost))
         }
     }
 
@@ -57,7 +56,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         liveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch(Dispatchers.IO) {
             val unFollowerPostData = repository.getUnFollowerPost(follower)
-            liveData.postValue(ViewStatus.PostDataLiveData(unFollowerPostData))
+            liveData.postValue(ViewStatus.PostData(unFollowerPostData))
         }
     }
 
@@ -75,7 +74,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         }
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.setNewFollower(userId, data.id)
-            liveData.postValue(ViewStatus.SetNewFollowerLiveData(result))
+            liveData.postValue(ViewStatus.SetNewFollower(result))
         }
     }
 
@@ -88,7 +87,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         )
         viewModelScope.launch {
             val result = repository.writePost(postData)
-            liveData.postValue(ViewStatus.SendPostLiveData(result))
+            liveData.postValue(ViewStatus.SendPost(result))
         }
 
     }
@@ -107,10 +106,10 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     sealed class ViewStatus {
         object ViewLoading : ViewStatus()
 
-        data class FollowerLiveData(val data: String) : ViewStatus()
-        data class SetNewFollowerLiveData(val data: String) : ViewStatus()
-        data class PostDataLiveData(val data: ArrayList<FirebasePostData>) : ViewStatus()
-        data class SendPostLiveData(val data: String) : ViewStatus()
+        data class Follower(val data: String) : ViewStatus()
+        data class SetNewFollower(val data: String) : ViewStatus()
+        data class PostData(val data: ArrayList<FirebasePostData>) : ViewStatus()
+        data class SendPost(val data: String) : ViewStatus()
 
         data class ViewError(val message: String) : ViewStatus()
     }

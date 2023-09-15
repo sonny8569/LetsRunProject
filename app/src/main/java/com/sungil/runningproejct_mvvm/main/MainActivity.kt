@@ -74,22 +74,22 @@ class MainActivity : AppCompatActivity() {
                     Timber.d("Loading.....")
                 }
 
-                is MainViewModel.ViewStatus.FollowerLiveData -> {
+                is MainViewModel.ViewStatus.Follower -> {
                     Timber.d("Success to get Follower")
                 }
 
-                is MainViewModel.ViewStatus.PostDataLiveData -> {
+                is MainViewModel.ViewStatus.PostData -> {
                     Timber.d("The Post data  is Come")
                     val postData = it.data
                     postAdapter.data = postData
                 }
 
-                is MainViewModel.ViewStatus.SetNewFollowerLiveData -> {
+                is MainViewModel.ViewStatus.SetNewFollower -> {
                     Timber.d("Success to set New Follower")
                     Toast.makeText(this, "Success to follower $it", Toast.LENGTH_SHORT).show()
                 }
 
-                is MainViewModel.ViewStatus.SendPostLiveData -> {
+                is MainViewModel.ViewStatus.SendPost -> {
                     Timber.d("Success to send New Post")
                     Toast.makeText(this, "Success to Post Data", Toast.LENGTH_SHORT).show()
                 }
