@@ -2,23 +2,19 @@ package com.sungil.runningproejct_mvvm.activityRate
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.sungil.runningproejct_mvvm.MainApplication
-import com.sungil.runningproejct_mvvm.activityRate.dataObject.GpsData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 class GpsTracker @Inject constructor() {
@@ -50,7 +46,7 @@ class GpsTracker @Inject constructor() {
     }
 
     @SuppressLint("MissingPermission")
-    fun getLastLocation() {
+    suspend fun getLastLocation() {
         mLocationClient =
             LocationServices.getFusedLocationProviderClient(MainApplication.appContext)
         fusedLocationClient =
@@ -62,7 +58,8 @@ class GpsTracker @Inject constructor() {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             interval = 1000
         }
-        Looper.myLooper()?.let {
+
+        withContext(Dispatchers.Main) {
             if (ActivityCompat.checkSelfPermission(
                     MainApplication.appContext,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -72,9 +69,13 @@ class GpsTracker @Inject constructor() {
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 Timber.e("The Permission is Not Granted")
-                return
+                return@withContext
             }
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, it)
+            if(Looper.myLooper() == null){
+                Timber.d("The Lopper is Null")
+                return@withContext
+            }
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper()!!)
         }
     }
 
