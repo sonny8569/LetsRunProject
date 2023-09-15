@@ -21,7 +21,7 @@
 
         <meta-data
             android:name="com.google.android.API_KEY"
-            android:value="AIzaSyD4ECyZ3iElL3ZxJa2aJyQCpAPhKJQhyKc"/>
+            android:value="${googleMapApiKey}"/>
 
         <activity
             android:name=".login.LoginActivity"
