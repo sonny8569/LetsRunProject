@@ -10,8 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.activityRate.ActivityRate
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import com.sungil.runningproejct_mvvm.activityRate.RateRunningDistanceActivity
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
 import com.sungil.runningproejct_mvvm.main.bottomSheet.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
@@ -146,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         requestPermissionsLauncher.launch(permissions)
     }
     private fun getRateActivity() {
-        val intent = Intent(this, ActivityRate::class.java)
+        val intent = Intent(this, RateRunningDistanceActivity::class.java)
         startActivity(intent)
     }
 

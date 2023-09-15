@@ -1,7 +1,6 @@
 package com.sungil.runningproejct_mvvm.activityRate
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -9,10 +8,9 @@ import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.activityRate.viewModel.RateViewModel
 import com.sungil.runningproejct_mvvm.databinding.ActivityRateBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
-class ActivityRate : AppCompatActivity() {
+class RateRunningDistanceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRateBinding
     private val viewModel: RateViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
