@@ -17,7 +17,7 @@ class RateRunningDistanceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRateBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        observer()
+        bindObserver()
         addListener()
     }
 
@@ -38,7 +38,7 @@ class RateRunningDistanceActivity : AppCompatActivity() {
         }
     }
 
-    private fun observer() {
+    private fun bindObserver() {
         viewModel.liveData.observe(this, Observer {
             binding.txtRate.text = it?.runData + "m"
         })
