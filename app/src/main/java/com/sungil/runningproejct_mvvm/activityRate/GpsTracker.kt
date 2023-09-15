@@ -24,8 +24,8 @@ import javax.inject.Inject
 class GpsTracker @Inject constructor() {
     private var mLocationClient: FusedLocationProviderClient? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    val locationRequest = LocationRequest.create()
-    var totalDistance: Float = 0f
+    private val locationRequest = LocationRequest.create()
+    private var totalDistance: Float = 0f
 
     private var callback: ((Float) -> Unit)? = null
     fun setTotalDistanceCallback(callback: (Float) -> Unit) {
@@ -82,8 +82,5 @@ class GpsTracker @Inject constructor() {
         mLocationClient?.removeLocationUpdates(locationCallback)
     }
 
-    fun getGpsData(): Float {
-        return totalDistance
-    }
 
 }
