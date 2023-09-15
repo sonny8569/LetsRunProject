@@ -1,17 +1,22 @@
 package com.sungil.runningproejct_mvvm.activityRate.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sungil.runningproejct_mvvm.activityRate.useCase.GetKmRateUseCase
+import com.sungil.runningproejct_mvvm.activityRate.useCase.GetRunningRateUseCase
+import com.sungil.runningproejct_mvvm.activityRate.useCase.StartRunningRateUseCase
+import com.sungil.runningproejct_mvvm.activityRate.useCase.StopRunningRateUseCase
 import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RateViewModel @Inject constructor(private val getKmRateUseCase: GetKmRateUseCase , private val runningDao: RunningDao) :
+class RateViewModel @Inject constructor(
+    private val getRunningRateUseCase: GetRunningRateUseCase,
+    private val stopRunningRateUseCase: StopRunningRateUseCase,
+    private val startRunningRateUseCase: StartRunningRateUseCase,
+    private val runningDao: RunningDao,
+) :
     ViewModel() {
 
     private var _liveData = runningDao.getRunningDataLiveData()
@@ -19,16 +24,18 @@ class RateViewModel @Inject constructor(private val getKmRateUseCase: GetKmRateU
 
 
     private fun getKmRate() {
-        getKmRateUseCase.getRunningRate()
+        getRunningRateUseCase.getRunningRate()
     }
 
     fun startRunningRate() {
-        getKmRateUseCase.startRunningRate()
+        viewModelScope.launch {
+            startRunningRateUseCase.startRunningRate()
+        }
         getKmRate()
     }
 
     fun stopRunningRate() {
-        getKmRateUseCase.stopRunningRate()
+        stopRunningRateUseCase.stopRunningRate()
     }
 
     sealed class ViewStatus {
