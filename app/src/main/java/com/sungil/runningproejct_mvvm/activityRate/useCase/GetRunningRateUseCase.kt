@@ -1,13 +1,13 @@
 package com.sungil.runningproejct_mvvm.activityRate.useCase
 
-import com.sungil.runningproejct_mvvm.activityRate.dataObject.GpsData
-import com.sungil.runningproejct_mvvm.activityRate.repository.RateRepository
+import com.sungil.controller.repository.ControllerRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetRunningRateUseCase @Inject constructor(private val repository: RateRepository) {
+class GetRunningRateUseCase @Inject constructor(private val repository: ControllerRepository) {
 
-    fun getRunningRate() {
-        repository.getLocationData()
+    fun getRunningRate(): Flow<Float> {
+        return repository.getDistance()
     }
 
 }

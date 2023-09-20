@@ -1,10 +1,10 @@
 package com.sungil.runningproejct_mvvm.activityRate.useCase
 
-import com.sungil.runningproejct_mvvm.activityRate.repository.RateRepository
+import com.sungil.controller.repository.ControllerRepository
 import javax.inject.Inject
 
-class StopRunningRateUseCase @Inject constructor(private val repository: RateRepository) {
-    fun stopRunningRate() {
-        repository.stopLocationRate()
+class StopRunningRateUseCase @Inject constructor(private val repository: ControllerRepository) {
+    suspend fun stopRunningRate() {
+        repository.stopGpsApi()
     }
 }
