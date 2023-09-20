@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">wear</string>
-
-    <!-- Intro   -->
-    <string name="txt_btn_start_app">시작하기</string>
-</resources>
