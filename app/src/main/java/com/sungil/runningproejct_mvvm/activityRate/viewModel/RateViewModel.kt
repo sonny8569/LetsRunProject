@@ -1,11 +1,13 @@
 package com.sungil.runningproejct_mvvm.activityRate.viewModel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.activityRate.useCase.GetRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StartRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StopRunningRateUseCase
 import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
+import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,23 +21,37 @@ class RateViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private var _liveData = runningDao.getRunningDataLiveData()
+    private var _liveData = MutableLiveData<ViewStatus>()
     val liveData = _liveData
 
 
     private fun getKmRate() {
-        getRunningRateUseCase.getRunningRate()
+        val data = getRunningRateUseCase.getRunningRate()
+        viewModelScope.launch {
+            data.collect{
+                _liveData.value = ViewStatus.KmRate(it.toString())
+            }
+        }
     }
 
     fun startRunningRate() {
+        _liveData.postValue(ViewStatus.ViewLoading)
         viewModelScope.launch {
             startRunningRateUseCase.startRunningRate()
         }
         getKmRate()
     }
 
-    fun stopRunningRate() {
-        stopRunningRateUseCase.stopRunningRate()
+    fun stopRunningRate(distance: String) {
+        viewModelScope.launch {
+            stopRunningRateUseCase.stopRunningRate()
+        }
+        val beforeData = runningDao.getRunningData()
+        if (beforeData == null) {
+            runningDao.insert(WearRunDataDBM(distance))
+            return
+        }
+        runningDao.update(WearRunDataDBM(distance))
     }
 
     sealed class ViewStatus {

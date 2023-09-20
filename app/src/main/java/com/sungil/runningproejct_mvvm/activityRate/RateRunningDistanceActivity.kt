@@ -1,6 +1,7 @@
 package com.sungil.runningproejct_mvvm.activityRate
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -8,6 +9,7 @@ import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.activityRate.viewModel.RateViewModel
 import com.sungil.runningproejct_mvvm.databinding.ActivityRateBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RateRunningDistanceActivity : AppCompatActivity() {
@@ -32,7 +34,7 @@ class RateRunningDistanceActivity : AppCompatActivity() {
 
                 getString(R.string.btn_stop_rate) -> {
                     binding.btnRate.text = getString(R.string.btn_rate)
-                    viewModel.stopRunningRate()
+                    viewModel.stopRunningRate(binding.txtRate.text.toString())
                 }
             }
         }
@@ -40,7 +42,19 @@ class RateRunningDistanceActivity : AppCompatActivity() {
 
     private fun bindObserver() {
         viewModel.liveData.observe(this, Observer {
-            binding.txtRate.text = it?.runData + "m"
+            when (it) {
+                is RateViewModel.ViewStatus.ViewLoading -> {
+                    Timber.d("Loading for get Distance")
+                }
+
+                is RateViewModel.ViewStatus.KmRate -> {
+                    binding.txtRate.text = it.data
+                }
+
+                is RateViewModel.ViewStatus.ViewError -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         })
     }
 }
