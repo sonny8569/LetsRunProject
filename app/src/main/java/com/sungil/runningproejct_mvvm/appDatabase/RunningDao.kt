@@ -14,7 +14,7 @@ import com.sungil.runningproejct_mvvm.utill.Define
 interface RunningDao {
 
     @Query("SELECT * FROM ${Define.WEAR_RUNNING_TABLE}")
-    fun getRunningData () : LiveData<WearRunDataDBM?>
+    fun getRunningDataLiveData () : LiveData<WearRunDataDBM?>
 
     @Insert
     fun insert(data : WearRunDataDBM)
@@ -24,6 +24,9 @@ interface RunningDao {
 
     @Delete
     fun delete(data:  WearRunDataDBM)
+
+    @Query("SELECT * FROM ${Define.WEAR_RUNNING_TABLE}")
+    fun getRunningData () : WearRunDataDBM?
 
 
 }
