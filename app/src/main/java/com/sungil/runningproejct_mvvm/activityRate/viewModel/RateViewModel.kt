@@ -35,7 +35,7 @@ class RateViewModel @Inject constructor(
     }
 
     fun startRunningRate() {
-        _liveData.postValue(ViewStatus.ViewLoading)
+        _liveData.postValue(ViewStatus.Loading)
         viewModelScope.launch {
             startRunningRateUseCase.startRunningRate()
         }
@@ -55,7 +55,7 @@ class RateViewModel @Inject constructor(
     }
 
     sealed class ViewStatus {
-        object ViewLoading : ViewStatus()
+        object Loading : ViewStatus()
         data class KmRate(val data: String) : ViewStatus()
         data class ViewError(val message: String) : ViewStatus()
 

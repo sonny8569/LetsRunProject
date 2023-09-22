@@ -15,6 +15,7 @@ import timber.log.Timber
 class RateRunningDistanceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRateBinding
     private val viewModel: RateViewModel by viewModels()
+    private var clickButton = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRateBinding.inflate(layoutInflater)
@@ -25,25 +26,23 @@ class RateRunningDistanceActivity : AppCompatActivity() {
 
     private fun addListener() {
         binding.btnRate.setOnClickListener {
-            when (binding.btnRate.text) {
-                getString(R.string.btn_rate) -> {
-                    binding.txtRate.text = getString(R.string.txt_rate_start)
-                    binding.btnRate.text = getString(R.string.btn_stop_rate)
-                    viewModel.startRunningRate()
-                }
-
-                getString(R.string.btn_stop_rate) -> {
-                    binding.btnRate.text = getString(R.string.btn_rate)
-                    viewModel.stopRunningRate(binding.txtRate.text.toString())
-                }
+            if (!clickButton) {
+                binding.txtRate.text = getString(R.string.txt_rate_start)
+                binding.btnRate.text = getString(R.string.btn_stop_rate)
+                viewModel.startRunningRate()
+                clickButton = true
+                return@setOnClickListener
             }
+            binding.btnRate.text = getString(R.string.btn_rate)
+            viewModel.stopRunningRate(binding.txtRate.text.toString())
+            clickButton = false
         }
     }
 
     private fun bindObserver() {
         viewModel.liveData.observe(this, Observer {
             when (it) {
-                is RateViewModel.ViewStatus.ViewLoading -> {
+                is RateViewModel.ViewStatus.Loading -> {
                     Timber.d("Loading for get Distance")
                 }
 
