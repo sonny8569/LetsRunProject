@@ -15,11 +15,11 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class GpsTracker {
-    companion object{
-        private var instance : GpsTracker ?= null
+    companion object {
+        private var instance: GpsTracker? = null
 
-        fun getInstance() : GpsTracker{
-            instance ?: synchronized(this){
+        fun getInstance(): GpsTracker {
+            instance ?: synchronized(this) {
                 instance ?: GpsTracker().also {
                     instance = it
                 }
@@ -29,11 +29,10 @@ class GpsTracker {
     }
 
     private var locationClient: FusedLocationProviderClient? = null
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationRequest = LocationRequest.create()
     private var totalDistance: Float = 0f
     val distanceFlow = MutableStateFlow(totalDistance)
-    var count = 0
+
     //위치 값 요청에 대한 갱신 정보를 받는 변수
     private var locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -46,11 +45,7 @@ class GpsTracker {
                 // 평균 속력을 구합니다 (단위: 킬로미터/시간)
                 totalDistance = location.distanceTo(locationResult.lastLocation)
                 Timber.d("totalDistance : $totalDistance")
-                if(count > 5){
-                    distanceFlow.value = 10f
-                }
                 distanceFlow.value = totalDistance
-                count ++
             }
         }
     }
@@ -68,7 +63,7 @@ class GpsTracker {
         }
 
         withContext(Dispatchers.Main) {
-            if (Looper.myLooper() == null) {
+            Looper.myLooper()?.let { looper ->
                 Timber.d("The Lopper is Null")
                 return@withContext
             }
@@ -81,9 +76,8 @@ class GpsTracker {
     }
 
     fun stopGpsApi() {
-        locationClient!!.removeLocationUpdates(locationCallback)
+        locationClient?.removeLocationUpdates(locationCallback)
     }
-
 
 
 }
