@@ -17,7 +17,6 @@ class RateViewModel @Inject constructor(
     private val getRunningRateUseCase: GetRunningRateUseCase,
     private val stopRunningRateUseCase: StopRunningRateUseCase,
     private val startRunningRateUseCase: StartRunningRateUseCase,
-    private val runningDao: RunningDao,
 ) :
     ViewModel() {
 
@@ -46,12 +45,7 @@ class RateViewModel @Inject constructor(
         viewModelScope.launch {
             stopRunningRateUseCase.stopRunningRate()
         }
-        val beforeData = runningDao.getRunningData()
-        if (beforeData == null) {
-            runningDao.insert(WearRunDataDBM(distance))
-            return
-        }
-        runningDao.update(WearRunDataDBM(distance))
+        stopRunningRateUseCase.saveRunningRate(distance)
     }
 
     sealed class ViewStatus {
