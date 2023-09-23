@@ -1,6 +1,5 @@
 package com.sungil.runningproejct_mvvm.main.bottomSheet
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
+import com.sungil.device.entity.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.databinding.BottomSheetPostSnsBinding
 import com.sungil.runningproejct_mvvm.utill.Define
 import timber.log.Timber

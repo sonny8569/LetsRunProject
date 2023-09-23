@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.device.entity.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
@@ -29,7 +29,7 @@ class SignUpViewModel @Inject constructor (private val repository: LoginReposito
     val signUpLiveData get() = _signUpLiveData
 
     //user정보 latiner 은 이값은 초기화을 명시적으로
-    private  var userInfo : UserInfoDBM ? = null
+    private  var userInfo : UserInfoDBM? = null
 
     //중복회원 확인
     fun checkAlreadySignUp(data : UserInfoDBM) {

@@ -2,11 +2,11 @@ package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
+import com.sungil.device.room.RunningDao
+import com.sungil.device.room.UserInfoDao
+import com.sungil.device.entity.FirebasePostData
+import com.sungil.device.entity.UserInfoDBM
+import com.sungil.device.entity.WearRunDataDBM
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
 import com.sungil.runningproejct_mvvm.utill.Define

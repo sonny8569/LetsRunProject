@@ -54,4 +54,14 @@ dependencies {
     //코루틴
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
 
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+
+    //roomDatabase
+    implementation "androidx.room:room-runtime:$roomDatabase"
+    kapt "androidx.room:room-compiler:$roomDatabase"
+    implementation "androidx.room:room-ktx:$roomDatabase"
+    implementation "androidx.room:room-paging:$roomDatabase"
+
+    implementation project(':Controller')
+    implementation project(':domian')
 }

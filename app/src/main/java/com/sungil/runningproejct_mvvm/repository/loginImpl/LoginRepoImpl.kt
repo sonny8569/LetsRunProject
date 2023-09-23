@@ -9,9 +9,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
-import com.sungil.runningproejct_mvvm.dataObject.LoginData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.device.room.UserInfoDao
+import com.sungil.device.entity.LoginData
+import com.sungil.device.entity.UserInfoDBM
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
@@ -22,7 +22,7 @@ import kotlin.Exception
 
 
 //로그인 Reop Hilt 주입
-class LoginRepoImpl @Inject constructor(private val context : Context,  private val userInfoDao: UserInfoDao ) : LoginRepository {
+class LoginRepoImpl @Inject constructor(private val context : Context,  private val userInfoDao: UserInfoDao) : LoginRepository {
 
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
     private val userInfoURL = Define.FIREBASE_USERINFO_URL

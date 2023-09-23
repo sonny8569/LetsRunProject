@@ -1,7 +1,7 @@
 package com.sungil.runningproejct_mvvm.useCase
 
 import com.google.firebase.database.DataSnapshot
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import com.sungil.device.entity.FirebasePostData
 import javax.inject.Inject
 
 class GetUnFollowerUseCase @Inject constructor() {
