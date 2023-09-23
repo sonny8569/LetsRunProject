@@ -1,17 +1,20 @@
 package com.sungil.runningproejct_mvvm.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import com.sungil.runningproejct_mvvm.activityRate.RateRunningDistanceActivity
 import com.sungil.runningproejct_mvvm.databinding.ActivityMainBinding
 import com.sungil.runningproejct_mvvm.main.bottomSheet.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.main.viewModel.MainViewModel
+import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.SetOnClickListener
 import com.sungil.runningproejct_mvvm.utill.PostAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +27,17 @@ class MainActivity : AppCompatActivity() {
 
 
     private val viewModel: MainViewModel by viewModels()
-    private val postAdapter by lazy{
+    private val postAdapter by lazy {
         PostAdapter()
+    }
+
+    private val requestPermissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        val allPermissionsGranted = permissions.all { it.value }
+        if (allPermissionsGranted) {
+            getRateActivity()
+            return@registerForActivityResult
+        }
+        Toast.makeText(this , getString(R.string.msg_agree_permission) , Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,66 +68,38 @@ class MainActivity : AppCompatActivity() {
             viewModel.clickUnFollower()
         }
 
-
-        viewModel.followerLiveData.observe(this, Observer { followerStatus ->
-            when (followerStatus) {
+        viewModel.viewStateLiveData.observe(this, Observer {
+            when (it) {
                 is MainViewModel.ViewStatus.ViewLoading -> {
-                    Timber.d("Loading for get Follower")
+                    Timber.d("Loading.....")
                 }
 
-                is MainViewModel.ViewStatus.ViewSuccess -> {
-                    Timber.d("Success to get Follower get Follower Post")
+                is MainViewModel.ViewStatus.Follower -> {
+                    Timber.d("Success to get Follower")
                 }
 
-                is MainViewModel.ViewStatus.ViewError -> {
-                    Timber.e("ERROR to get Follower")
-                    Toast.makeText(this, "The Follower is Empty", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        })
-
-
-        viewModel.postData.observe(this, Observer { postStatus ->
-            when (postStatus) {
-                is MainViewModel.ViewStatus.ViewLoading -> {
-                    Timber.d("Loading for get Post Data")
-                }
-
-                is MainViewModel.ViewStatus.ViewSuccess -> {
-                    Timber.d("The Follower Post is Come")
-                    val postData = postStatus.data as ArrayList<FirebasePostData>
+                is MainViewModel.ViewStatus.PostData -> {
+                    Timber.d("The Post data  is Come")
+                    val postData = it.data
                     postAdapter.data = postData
                 }
 
-                is MainViewModel.ViewStatus.ViewError -> {
-                    Timber.d("The Follower post Data is Null")
-                    Toast.makeText(
-                        this,
-                        "the Follower Post is Null Please Check The Data",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
-
-        binding.recyclerviewContent.adapter = postAdapter
-
-        viewModel.setFollowerLiveData.observe(this, Observer { followerStatus ->
-            when (followerStatus) {
-                is MainViewModel.ViewStatus.ViewLoading -> {
-                    Timber.d("Loading for get Follow the User")
+                is MainViewModel.ViewStatus.SetNewFollower -> {
+                    Timber.d("Success to set New Follower")
+                    Toast.makeText(this, "Success to follower $it", Toast.LENGTH_SHORT).show()
                 }
 
-                is MainViewModel.ViewStatus.ViewSuccess -> {
-                    val userId = followerStatus.data as String
-                    Toast.makeText(this, "Success to Follower $userId", Toast.LENGTH_SHORT).show()
+                is MainViewModel.ViewStatus.SendPost -> {
+                    Timber.d("Success to send New Post")
+                    Toast.makeText(this, "Success to Post Data", Toast.LENGTH_SHORT).show()
                 }
+
 
                 is MainViewModel.ViewStatus.ViewError -> {
-                    val message = followerStatus.message
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    Timber.e("ERROR")
+                    Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                 }
+
             }
         })
 
@@ -129,24 +113,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnPostSns.setOnClickListener {
             setPostSnsBottomSheet()
         }
-
-        viewModel.postLiveData.observe(this, Observer { postStatus ->
-            when (postStatus) {
-                is MainViewModel.ViewStatus.ViewLoading -> {
-                    Timber.d("Loading for post Data")
-                }
-
-                is MainViewModel.ViewStatus.ViewSuccess -> {
-                    Toast.makeText(this, "${postStatus.data} to Post Data", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                is MainViewModel.ViewStatus.ViewError -> {
-                    Timber.d("Error to Post Data")
-                    Toast.makeText(this, "ERROR to Post Data", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+        binding.icIcon.setOnClickListener {
+            checkPermission()
+        }
+        binding.recyclerviewContent.adapter = postAdapter
 
     }
 
@@ -158,10 +128,29 @@ class MainActivity : AppCompatActivity() {
             viewModel.postSns(it, getCurrentTimeInMillis())
             Toast.makeText(this, getString(R.string.msg_post_sns), Toast.LENGTH_SHORT).show()
         }
+        val bundle = Bundle()
+        bundle.putString(Define.KM_KEY , viewModel.getRunningData())
         bottomSheet.show(supportFragmentManager, bottomSheet.tag)
     }
 
     private fun getCurrentTimeInMillis(): Long {
         return System.currentTimeMillis()
+    }
+
+    private fun checkPermission() {
+        val permissions = arrayOf(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        requestPermissionsLauncher.launch(permissions)
+    }
+    private fun getRateActivity() {
+        val intent = Intent(this, RateRunningDistanceActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.checkRunningData()
     }
 }

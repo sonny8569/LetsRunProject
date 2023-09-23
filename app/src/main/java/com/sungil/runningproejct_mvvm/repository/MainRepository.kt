@@ -8,14 +8,15 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface MainRepository {
-    fun getRunningData(): LiveData<WearRunDataDBM?>
 
-    fun getFollower(userId: String): Flow<List<String>>
+    suspend fun getFollower(userId: String): List<String>
 
     fun getUserInfo(): UserInfoDBM?
 
-    fun getFollowerPost(follower: ArrayList<String>): Flow<ArrayList<FirebasePostData>>
-    fun getUnFollowerPost(follower: ArrayList<String>): Flow<ArrayList<FirebasePostData>>
-    fun setNewFollower(userId: String, myId: String): Flow<String>
+    suspend fun getFollowerPost(follower: ArrayList<String>): ArrayList<FirebasePostData>
+    suspend fun getUnFollowerPost(follower: ArrayList<String>): ArrayList<FirebasePostData>
+    suspend fun setNewFollower(userId: String, myId: String): String
     suspend fun writePost(data: FirebasePostData): String
+
+    fun getRunningData() : WearRunDataDBM?
 }

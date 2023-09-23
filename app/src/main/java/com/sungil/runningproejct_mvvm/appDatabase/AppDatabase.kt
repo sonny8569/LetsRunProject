@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 @Database(
     entities = [WearRunDataDBM::class, UserInfoDBM::class],
-    version = 4
+    version = 5
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wearRunningDao(): RunningDao

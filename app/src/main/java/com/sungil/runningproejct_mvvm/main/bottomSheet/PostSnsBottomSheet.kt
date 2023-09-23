@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.databinding.BottomSheetPostSnsBinding
+import com.sungil.runningproejct_mvvm.utill.Define
 import timber.log.Timber
 
 class PostSnsBottomSheet(val value: (PostSnsBottomSheet) -> Unit) : BottomSheetDialogFragment() {
@@ -28,9 +29,17 @@ class PostSnsBottomSheet(val value: (PostSnsBottomSheet) -> Unit) : BottomSheetD
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         addListener()
     }
-
+    private fun init() {
+        val km = arguments?.getString(Define.KM_KEY)
+        if (km == null) {
+            binding.txtKm.setText("0km")
+            return
+        }
+        binding.txtKm.setText(km)
+    }
     override fun onStart() {
         super.onStart()
         dialog?.setCancelable(false)

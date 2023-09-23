@@ -26,6 +26,9 @@ class Define {
         //RoomDatabase
         const val WEAR_RUNNING_TABLE = "runningTable"
         const val USERINFO_TABLE = "userInfoTable"
+
+        //Bundle Key
+        const val KM_KEY = "kmKey"
     }
     enum class Status {
         LOADING ,
