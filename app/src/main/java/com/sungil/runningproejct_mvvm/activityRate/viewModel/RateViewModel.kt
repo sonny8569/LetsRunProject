@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.activityRate.useCase.GetRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StartRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StopRunningRateUseCase
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

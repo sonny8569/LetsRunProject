@@ -16,3 +16,4 @@ rootProject.name = "RunningProejct_MVVM"
 include ':app'
 include ':Device'
 include ':Controller'
+include ':domian'

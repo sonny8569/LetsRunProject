@@ -3,7 +3,7 @@ package com.sungil.runningproejct_mvvm.utill
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
+import com.sungil.device.entity.FirebasePostData
 import com.sungil.runningproejct_mvvm.databinding.AdapterPostBinding
 import java.text.SimpleDateFormat
 import java.util.Date

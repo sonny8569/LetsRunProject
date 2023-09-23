@@ -1,10 +1,8 @@
 package com.sungil.runningproejct_mvvm.repository
 
-import androidx.lifecycle.LiveData
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
-import kotlinx.coroutines.flow.Flow
+import com.sungil.device.entity.FirebasePostData
+import com.sungil.device.entity.UserInfoDBM
+import com.sungil.device.entity.WearRunDataDBM
 
 
 interface MainRepository {

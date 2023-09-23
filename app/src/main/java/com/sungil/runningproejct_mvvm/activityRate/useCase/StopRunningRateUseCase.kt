@@ -1,8 +1,8 @@
 package com.sungil.runningproejct_mvvm.activityRate.useCase
 
 import com.sungil.controller.repository.ControllerRepository
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
+import com.sungil.device.room.RunningDao
+import com.sungil.device.entity.WearRunDataDBM
 import javax.inject.Inject
 
 class StopRunningRateUseCase @Inject constructor(

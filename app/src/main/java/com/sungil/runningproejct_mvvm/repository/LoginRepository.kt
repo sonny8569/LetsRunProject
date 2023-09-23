@@ -1,7 +1,7 @@
 package com.sungil.runningproejct_mvvm.repository
 
-import com.sungil.runningproejct_mvvm.dataObject.LoginData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.device.entity.LoginData
+import com.sungil.device.entity.UserInfoDBM
 import com.sungil.runningproejct_mvvm.utill.RepositoryListener
 
 /**
@@ -9,11 +9,11 @@ import com.sungil.runningproejct_mvvm.utill.RepositoryListener
  */
 interface LoginRepository {
 
-    suspend fun requestCheckUserInfo(data : UserInfoDBM , Listener : RepositoryListener)
+    suspend fun requestCheckUserInfo(data : UserInfoDBM, Listener : RepositoryListener)
 
     suspend fun requestSignUp(data : UserInfoDBM, Listener : RepositoryListener )
 
-    suspend fun requestLogin(data : LoginData , Listener: RepositoryListener)
+    suspend fun requestLogin(data : LoginData, Listener: RepositoryListener)
 
-    fun saveUserInfo(data : UserInfoDBM , Listener: RepositoryListener)
+    fun saveUserInfo(data : UserInfoDBM, Listener: RepositoryListener)
 }

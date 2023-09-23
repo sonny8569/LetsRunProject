@@ -11,7 +11,7 @@ import com.sungil.runningproejct_mvvm.R
 import com.sungil.runningproejct_mvvm.databinding.ActivityLoginBinding
 import com.sungil.runningproejct_mvvm.login.viewModel.LoginViewModel
 import com.sungil.runningproejct_mvvm.main.MainActivity
-import com.sungil.runningproejct_mvvm.dataObject.LoginData
+import com.sungil.device.entity.LoginData
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

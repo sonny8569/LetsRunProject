@@ -2,7 +2,6 @@ package com.sungil.runningproejct_mvvm
 
 import android.app.Application
 import android.content.Context
-import com.sungil.controller.ControllerMainApplication
 import com.sungil.runningproejct_mvvm.utill.TimberDebugTree
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber

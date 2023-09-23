@@ -1,7 +1,7 @@
 package com.sungil.runningproejct_mvvm.repository.loginImpl
 
 import android.content.Context
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
+import com.sungil.device.room.UserInfoDao
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import dagger.Module
 import dagger.Provides
@@ -18,7 +18,8 @@ object LoginRepositoryModule {
     @Singleton
     fun provideLoginRepository(
         @ApplicationContext context: Context ,
-        userInfoDao : UserInfoDao): LoginRepository {
+        userInfoDao : UserInfoDao
+    ): LoginRepository {
         return LoginRepoImpl(context , userInfoDao)
     }
 

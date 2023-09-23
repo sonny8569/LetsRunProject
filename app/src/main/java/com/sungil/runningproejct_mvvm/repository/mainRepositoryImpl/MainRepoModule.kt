@@ -1,7 +1,7 @@
 package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
+import com.sungil.device.room.RunningDao
+import com.sungil.device.room.UserInfoDao
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
 import com.sungil.runningproejct_mvvm.useCase.GetFollowerUseCase
