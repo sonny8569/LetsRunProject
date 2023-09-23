@@ -1,6 +1,7 @@
 package com.sungil.device
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.os.Looper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -8,19 +9,25 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.sungil.controller.interactor.GpsDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class GpsTracker {
+
+class GpsTracker(
+    private val context : Context
+) : GpsDataSource {
     companion object {
         private var instance: GpsTracker? = null
 
-        fun getInstance(): GpsTracker {
+        fun getInstance(context : Context): GpsTracker {
             instance ?: synchronized(this) {
-                instance ?: GpsTracker().also {
+                instance ?: GpsTracker(context).also {
                     instance = it
                 }
             }
@@ -30,8 +37,8 @@ class GpsTracker {
 
     private var locationClient: FusedLocationProviderClient? = null
     private val locationRequest = LocationRequest.create()
-    private var totalDistance: Float = 0f
-    val distanceFlow = MutableStateFlow(totalDistance)
+    private val _distanceFlow = MutableStateFlow(0f)
+    private val distanceFlow: Flow<Float> get() = _distanceFlow
 
     //위치 값 요청에 대한 갱신 정보를 받는 변수
     private var locationCallback: LocationCallback = object : LocationCallback() {
@@ -43,17 +50,16 @@ class GpsTracker {
                 val location = locations.last()
 
                 // 평균 속력을 구합니다 (단위: 킬로미터/시간)
-                totalDistance = location.distanceTo(locationResult.lastLocation)
-                Timber.d("totalDistance : $totalDistance")
-                distanceFlow.value = totalDistance
+                Timber.d("totalDistance : $locationResult.lastLocation")
+                _distanceFlow.value = location.distanceTo(locationResult.lastLocation)
             }
         }
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun startGpsApi() {
+    override suspend fun start() {
         locationClient =
-            LocationServices.getFusedLocationProviderClient(DeviceMainApplication.appContext)
+            LocationServices.getFusedLocationProviderClient(context)
         locationClient!!.lastLocation.addOnSuccessListener { location: Location? ->
             Timber.e("LastLocation : ${location?.speed}")
         }
@@ -75,9 +81,9 @@ class GpsTracker {
         }
     }
 
-    fun stopGpsApi() {
+    override suspend fun stop() {
         locationClient?.removeLocationUpdates(locationCallback)
     }
 
-
+    override fun getDistanceFlow(): Flow<Float> = distanceFlow
 }

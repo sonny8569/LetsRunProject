@@ -108,7 +108,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$locationLib"
 
     implementation project(':Controller')
-
+    //디바이스도 ㅊㄱ
 
 }
 
