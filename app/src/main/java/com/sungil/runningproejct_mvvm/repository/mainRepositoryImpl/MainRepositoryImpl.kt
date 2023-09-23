@@ -28,8 +28,8 @@ class MainRepositoryImpl @Inject constructor(
         val followerUrl = Define.FIREBASE_FOLLOWER + "/" + userId
         val followerRef = database.getReference(followerUrl)
         val dataSnapShot = followerRef.get().await()
-        val value = dataSnapShot.value as HashMap<String, String>
-        return value.values.toList() ?: emptyList()
+        val value = dataSnapShot.value as? HashMap<String, String>
+        return value?.values?.toList() ?: emptyList()
     }
 
     override fun getUserInfo(): UserInfoDBM? {
