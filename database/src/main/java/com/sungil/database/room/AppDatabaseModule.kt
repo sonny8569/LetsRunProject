@@ -28,7 +28,8 @@ class AppDatabaseModule {
     }
 
     @Provides
-    fun provideUserInfoDao(appDatabase: AppDatabase): UserInfoDao {
+    fun provideUserInfoDao(appDatabase: AppDatabase) : UserInfoDao {
         return appDatabase.userInfoDao()
     }
+
 }

@@ -2,8 +2,8 @@ package com.sungil.device.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.sungil.device.entity.UserInfoDBM
-import com.sungil.device.entity.WearRunDataDBM
+import com.sungil.database.entity.UserInfoDBM
+import com.sungil.database.entity.WearRunDataDBM
 import javax.inject.Singleton
 
 @Singleton

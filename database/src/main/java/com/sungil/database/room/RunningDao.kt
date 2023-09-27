@@ -6,8 +6,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.sungil.device.WEAR_RUNNING_TABLE
-import com.sungil.device.entity.WearRunDataDBM
+import com.sungil.database.WEAR_RUNNING_TABLE
+import com.sungil.database.entity.WearRunDataDBM
 
 //running data
 @Dao
@@ -23,7 +23,7 @@ interface RunningDao {
     fun update(data : WearRunDataDBM)
 
     @Delete
-    fun delete(data:  WearRunDataDBM)
+    fun delete(data: WearRunDataDBM)
 
     @Query("SELECT * FROM ${WEAR_RUNNING_TABLE}")
     fun getRunningData () : WearRunDataDBM?

@@ -1,10 +1,9 @@
-package com.sungil.device.entity
+package com.sungil.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sungil.device.WEAR_RUNNING_TABLE
+import com.sungil.database.WEAR_RUNNING_TABLE
 import com.sungil.runningproejct_mvvm.domain.entity.WearRunData
-import com.sungil.runningproejct_mvvm.utill.Define
 
 @Entity(
     tableName = WEAR_RUNNING_TABLE
