@@ -2,13 +2,10 @@ package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.sungil.device.room.RunningDao
 import com.sungil.device.entity.FirebasePostData
-import com.sungil.device.entity.WearRunDataDBM
 import com.sungil.runningproejct_mvvm.domain.entity.UserInfoData
 import com.sungil.runningproejct_mvvm.domain.entity.WearRunData
 import com.sungil.runningproejct_mvvm.domain.usecase.rate.GetRunningDataUseCase
-import com.sungil.runningproejct_mvvm.domain.usecase.rate.GetRunningRateUseCase
 import com.sungil.runningproejct_mvvm.domain.usecase.user.GetUserInfoUseCase
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
