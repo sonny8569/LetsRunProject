@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.sungil.controller.interactor.GpsDataSource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,24 +18,12 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class GpsTracker(
-    private val context : Context
+class GpsTracker @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) : GpsDataSource {
-    companion object {
-        private var instance: GpsTracker? = null
-
-        fun getInstance(context : Context): GpsTracker {
-            instance ?: synchronized(this) {
-                instance ?: GpsTracker(context).also {
-                    instance = it
-                }
-            }
-            return instance!!
-        }
-    }
-
     private var locationClient: FusedLocationProviderClient? = null
     private val locationRequest = LocationRequest.create()
     private val _distanceFlow = MutableStateFlow(0f)
@@ -67,7 +56,6 @@ class GpsTracker(
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             interval = 1000
         }
-
         withContext(Dispatchers.Main) {
             Looper.myLooper()?.let { looper ->
                 Timber.d("The Lopper is Null")
@@ -79,11 +67,16 @@ class GpsTracker(
                 Looper.myLooper()!!
             )
         }
+        locationClient?.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()!!
+        )
     }
 
     override suspend fun stop() {
         locationClient?.removeLocationUpdates(locationCallback)
     }
 
-    override fun getDistanceFlow(): Flow<Float> = distanceFlow
+    override fun distanceFlow(): Flow<Float> = distanceFlow
 }

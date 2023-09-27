@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface GpsDataSource {
     suspend fun start()
     suspend fun stop()
-    fun getDistanceFlow(): Flow<Float>
+    fun distanceFlow(): Flow<Float>
 }

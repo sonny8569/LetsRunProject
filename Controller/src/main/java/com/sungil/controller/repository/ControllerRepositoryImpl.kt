@@ -18,6 +18,6 @@ class ControllerRepositoryImpl @Inject constructor(
         gpsDataSource.stop()
     }
 
-    override fun getDistance(): Flow<Float> = gpsDataSource.getDistanceFlow()
+    override fun getDistance(): Flow<Float> = gpsDataSource.distanceFlow()
 
 }
