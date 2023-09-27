@@ -43,7 +43,7 @@ class RateViewModel @Inject constructor(
         viewModelScope.launch {
             stopRunningRateUseCase.stopRunningRate()
         }
-        stopRunningRateUseCase.saveRunningRate(distance)
+        stopRunningRateUseCase.saveRunningDistance(distance)
     }
 
     sealed class ViewStatus {

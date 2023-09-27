@@ -23,8 +23,6 @@ class MainApplication : Application() {
 
     private fun init(){
         Timber.plant(TimberDebugTree())
-        ControllerMainApplication.appContext = appContext
-        ControllerMainApplication().init()
     }
 
 }

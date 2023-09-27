@@ -3,10 +3,13 @@ package com.sungil.runningproejct_mvvm.repository.mainRepositoryImpl
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.sungil.device.room.RunningDao
-import com.sungil.device.room.UserInfoDao
 import com.sungil.device.entity.FirebasePostData
-import com.sungil.device.entity.UserInfoDBM
 import com.sungil.device.entity.WearRunDataDBM
+import com.sungil.runningproejct_mvvm.domain.entity.UserInfoData
+import com.sungil.runningproejct_mvvm.domain.entity.WearRunData
+import com.sungil.runningproejct_mvvm.domain.usecase.rate.GetRunningDataUseCase
+import com.sungil.runningproejct_mvvm.domain.usecase.rate.GetRunningRateUseCase
+import com.sungil.runningproejct_mvvm.domain.usecase.user.GetUserInfoUseCase
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import com.sungil.runningproejct_mvvm.useCase.GetUnFollowerUseCase
 import com.sungil.runningproejct_mvvm.utill.Define
@@ -17,10 +20,10 @@ import kotlinx.coroutines.tasks.await
 
 //MainRepo hilt  적용
 class MainRepositoryImpl @Inject constructor(
-    private val runningDao: RunningDao,
-    private val userDao: UserInfoDao,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getFollowerUseCase: GetFollowerUseCase,
     private val unFollowerUseCase: GetUnFollowerUseCase,
+    private val getRunningDataUseCase: GetRunningDataUseCase,
 ) : MainRepository {
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
 
@@ -32,8 +35,8 @@ class MainRepositoryImpl @Inject constructor(
         return value?.values?.toList() ?: emptyList()
     }
 
-    override fun getUserInfo(): UserInfoDBM? {
-        return userDao.getUserInfo() ?: return null
+    override fun getUserInfo(): UserInfoData? {
+        return getUserInfoUseCase.getUserInfo() ?: return null
     }
 
     override suspend fun getFollowerPost(follower: ArrayList<String>): ArrayList<FirebasePostData> {
@@ -81,8 +84,8 @@ class MainRepositoryImpl @Inject constructor(
         return resultString
     }
 
-    override fun getRunningData(): WearRunDataDBM? {
-        return runningDao.getRunningData()
+    override fun getRunningData(): WearRunData? {
+        return getRunningDataUseCase.getRunningData()
     }
 
 }
