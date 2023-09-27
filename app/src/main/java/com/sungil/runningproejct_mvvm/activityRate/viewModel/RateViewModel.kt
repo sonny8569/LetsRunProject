@@ -41,7 +41,11 @@ class RateViewModel @Inject constructor(
 
     fun stopRunningRate(distance: String) {
         viewModelScope.launch {
-            stopRunningRateUseCase.stopRunningRate()
+            val result = stopRunningRateUseCase.stopRunningRate()
+            if (result != com.sungil.runningproejct_mvvm.domain.usecase.rate.StopRunningRateUseCase.Result.Success) {
+               _liveData.postValue(ViewStatus.ViewError("error to save Running Data"))
+                return@launch
+            }
         }
         stopRunningRateUseCase.saveRunningDistance(distance)
     }

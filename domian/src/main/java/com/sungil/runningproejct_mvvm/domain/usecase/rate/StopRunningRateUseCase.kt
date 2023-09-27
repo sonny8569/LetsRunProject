@@ -10,8 +10,9 @@ class StopRunningRateUseCase @Inject constructor(
     private val repository: ControllerRepository,
     private val runningRepository: RunningRepository,
 ) {
-    suspend fun stopRunningRate() {
+    suspend fun stopRunningRate() : StopRunningRateUseCase.Result {
         repository.stopGpsApi()
+        return StopRunningRateUseCase.Result.Success
     }
 
     fun saveRunningRate(distance: String) {

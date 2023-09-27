@@ -7,8 +7,8 @@ import javax.inject.Inject
 class StopRunningRateUseCase @Inject constructor(
     private val repository: StopRunningRateUseCase,
 ) {
-    suspend fun stopRunningRate() {
-        repository.stopRunningRate()
+    suspend fun stopRunningRate(): StopRunningRateUseCase.Result {
+        return repository.stopRunningRate()
     }
 
     fun saveRunningDistance(distance: String) {
