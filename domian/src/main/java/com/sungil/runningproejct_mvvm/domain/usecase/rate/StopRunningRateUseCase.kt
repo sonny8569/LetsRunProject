@@ -7,8 +7,7 @@ import com.sungil.runningproejct_mvvm.domain.usecase.UseCase
 import javax.inject.Inject
 
 class StopRunningRateUseCase @Inject constructor(
-    private val repository: ControllerRepository,
-    private val runningRepository: RunningRepository,
+    private val repository: ControllerRepository
 ) {
     suspend fun stopRunningRate() : StopRunningRateUseCase.Result {
         repository.stopGpsApi()
@@ -16,12 +15,12 @@ class StopRunningRateUseCase @Inject constructor(
     }
 
     fun saveRunningRate(distance: String) {
-        val beforeData = runningRepository.getRunningData()
+        val beforeData = repository.getRunningData()
         if (beforeData == null) {
-            runningRepository.insert(WearRunData(0, distance))
+            repository.insert(WearRunData(0, distance))
             return
         }
-        runningRepository.update(WearRunData(0, distance))
+        repository.update(WearRunData(0, distance))
     }
 
 
