@@ -1,5 +1,6 @@
 package com.sungil.database.repository
 
+import com.sungil.controller.interactor.RunningDataSource
 import com.sungil.database.entity.toDBM
 import com.sungil.database.entity.toDomainModel
 import com.sungil.device.room.RunningDao
@@ -9,7 +10,7 @@ import javax.inject.Inject
 
 class RunningRepositoryImpl @Inject constructor(
     private val runningDao: RunningDao,
-) : RunningRepository {
+) : RunningDataSource {
     override fun getRunningData(): WearRunData? {
         return runningDao.getRunningData()?.toDomainModel()
     }
@@ -20,5 +21,9 @@ class RunningRepositoryImpl @Inject constructor(
 
     override fun update(data: WearRunData) {
         runningDao.update(data.toDBM())
+    }
+
+    override fun delete(data: WearRunData) {
+        runningDao.delete(data.toDBM())
     }
 }

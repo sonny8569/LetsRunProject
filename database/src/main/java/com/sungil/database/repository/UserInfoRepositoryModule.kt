@@ -1,5 +1,6 @@
 package com.sungil.database.repository
 
+import com.sungil.controller.interactor.UserInfoDBDataSource
 import com.sungil.device.room.UserInfoDao
 import com.sungil.runningproejct_mvvm.domain.interactor.UserInfoRepository
 import dagger.Module
@@ -12,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 object UserInfoRepositoryModule {
 
     @Provides
-    fun providesUserInfoRepository(dao: UserInfoDao): UserInfoRepository {
-        return UserInfoRepositoryImpl(dao)
+    fun providesUserInfoRepository(dao: UserInfoDao): UserInfoDBDataSource {
+        return UserInfoDBRepositoryImpl(dao)
     }
 }
