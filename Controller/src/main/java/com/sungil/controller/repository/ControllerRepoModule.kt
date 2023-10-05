@@ -1,8 +1,9 @@
 package com.sungil.controller.repository
 
 import com.sungil.controller.interactor.GpsDataSource
+import com.sungil.controller.interactor.RunningDataSource
+import com.sungil.controller.interactor.UserInfoDBDataSource
 import com.sungil.runningproejct_mvvm.domain.interactor.ControllerRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +15,11 @@ class ControllerRepoModule {
 
 
     @Provides
-    fun providesControllerRepo(gpsDataSource: GpsDataSource): ControllerRepository {
-        return ControllerRepositoryImpl(gpsDataSource)
+    fun providesControllerRepo(
+        gpsDataSource: GpsDataSource,
+        userinfoDBDataSource: UserInfoDBDataSource,
+        runningDataSource: RunningDataSource,
+    ): ControllerRepository {
+        return ControllerRepositoryImpl(gpsDataSource, userinfoDBDataSource, runningDataSource)
     }
 }
