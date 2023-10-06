@@ -5,7 +5,7 @@ import com.sungil.runningproejct_mvvm.domain.interactor.ControllerRepository
 import com.sungil.runningproejct_mvvm.domain.interactor.UserInfoRepository
 import javax.inject.Inject
 
-class GetUserInfoUseCase @Inject constructor(private val userInfoRepository: ControllerRepository) {
+class GetUserInfoUseCase @Inject constructor(private val userInfoRepository: UserInfoRepository) {
 
     fun getUserInfo(): UserInfoData? {
         return userInfoRepository.getUserInfo()

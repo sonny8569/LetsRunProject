@@ -13,8 +13,6 @@ import javax.inject.Inject
 
 class ControllerRepositoryImpl @Inject constructor(
     private val gpsDataSource: GpsDataSource,
-    private val userInfoDBDataSource: UserInfoDBDataSource,
-    private val runningDataSource: RunningDataSource,
 ) : ControllerRepository {
 
 
@@ -26,27 +24,5 @@ class ControllerRepositoryImpl @Inject constructor(
         gpsDataSource.stop()
     }
 
-    override fun saveUserInfo(data: UserInfoData) {
-        userInfoDBDataSource.insertUserInfo(data)
-    }
-
-    override fun updateUserInfo(data: UserInfoData) {
-        userInfoDBDataSource.updateUserInfo(data)
-    }
-
-    override fun deleteUserInfo(data: UserInfoData) {
-        userInfoDBDataSource.deleteUserInfo(data)
-    }
-
-    override fun insert(data: WearRunData) {
-        runningDataSource.insert(data)
-    }
-
-    override fun update(data: WearRunData) {
-        runningDataSource.update(data)
-    }
-
-    override fun getRunningData(): WearRunData? = runningDataSource.getRunningData()
     override fun getDistance(): Flow<Float> = gpsDataSource.distanceFlow()
-    override fun getUserInfo(): UserInfoData? = userInfoDBDataSource.getUserInfo()
 }

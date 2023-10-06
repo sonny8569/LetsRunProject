@@ -17,9 +17,7 @@ class ControllerRepoModule {
     @Provides
     fun providesControllerRepo(
         gpsDataSource: GpsDataSource,
-        userinfoDBDataSource: UserInfoDBDataSource,
-        runningDataSource: RunningDataSource,
     ): ControllerRepository {
-        return ControllerRepositoryImpl(gpsDataSource, userinfoDBDataSource, runningDataSource)
+        return ControllerRepositoryImpl(gpsDataSource)
     }
 }

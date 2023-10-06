@@ -11,19 +11,4 @@ interface ControllerRepository {
     suspend fun stopGpsApi()
 
     fun getDistance(): Flow<Float>
-
-    fun getUserInfo(): UserInfoData?
-
-    fun saveUserInfo(data: UserInfoData)
-
-    fun updateUserInfo(data: UserInfoData)
-
-    fun deleteUserInfo(data: UserInfoData)
-
-    fun getRunningData(): WearRunData?
-
-    fun insert(data: WearRunData)
-
-    fun update(data: WearRunData)
-
 }

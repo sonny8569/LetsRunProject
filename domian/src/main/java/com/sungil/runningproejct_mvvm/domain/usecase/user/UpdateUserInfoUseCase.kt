@@ -5,7 +5,7 @@ import com.sungil.runningproejct_mvvm.domain.interactor.ControllerRepository
 import com.sungil.runningproejct_mvvm.domain.interactor.UserInfoRepository
 import javax.inject.Inject
 
-class UpdateUserInfoUseCase @Inject constructor(private val userInfoRepository: ControllerRepository) {
+class UpdateUserInfoUseCase @Inject constructor(private val userInfoRepository: UserInfoRepository) {
 
     fun updateUserInfo(data: UserInfoData) {
         userInfoRepository.updateUserInfo(data)

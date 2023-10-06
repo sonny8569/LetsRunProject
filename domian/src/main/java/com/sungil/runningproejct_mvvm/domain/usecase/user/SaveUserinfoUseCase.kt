@@ -5,7 +5,7 @@ import com.sungil.runningproejct_mvvm.domain.interactor.ControllerRepository
 import com.sungil.runningproejct_mvvm.domain.interactor.UserInfoRepository
 import javax.inject.Inject
 
-class SaveUserinfoUseCase @Inject constructor(private val userInfoRepository: ControllerRepository) {
+class SaveUserinfoUseCase @Inject constructor(private val userInfoRepository: UserInfoRepository) {
 
     fun saveUserInfo(data: UserInfoData) {
         userInfoRepository.saveUserInfo(data)
