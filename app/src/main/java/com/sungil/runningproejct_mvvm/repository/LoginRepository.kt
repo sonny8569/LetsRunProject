@@ -16,5 +16,4 @@ interface LoginRepository {
 
     suspend fun requestLogin(data : LoginData, Listener: RepositoryListener)
 
-    fun saveUserInfo(data : UserInfoData, Listener: RepositoryListener)
 }

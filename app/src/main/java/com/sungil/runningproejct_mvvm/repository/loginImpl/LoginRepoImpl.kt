@@ -29,10 +29,6 @@ import kotlin.Exception
 //로그인 Reop Hilt 주입
 class LoginRepoImpl @Inject constructor(
     private val context: Context,
-    private val saveUserInfoUseCase: SaveUserinfoUseCase,
-    private val updateUserInfoUseCase: UpdateUserInfoUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val deleteUserInfoUseCase: DeleteUserInfoUseCase,
 ) : LoginRepository {
 
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
@@ -145,33 +141,4 @@ class LoginRepoImpl @Inject constructor(
             })
     }
 
-
-    override fun saveUserInfo(data: UserInfoData, listener: RepositoryListener) {
-        try {
-            val userData = getUserInfoUseCase.getUserInfo()
-            if (userData == null) {
-                saveUserInfoUseCase.saveUserInfo(data)
-            } else {
-                if (userData.id == data.id && userData.password == data.password) {
-                    updateUserInfoUseCase.updateUserInfo(data)
-                } else {
-                    deleteUserInfoUseCase.deleteUserInfo(userData)
-                    saveUserInfoUseCase.saveUserInfo(data)
-                }
-            }
-            listener.onMessageSuccess(
-                ListenerMessage(
-                    null,
-                    loginImplContext.getString(R.string.msg_success_login)
-                )
-            )
-        } catch (e: Exception) {
-            listener.onMessageFail(
-                ListenerMessage(
-                    null,
-                    loginImplContext.getString(R.string.msg_error_app)
-                )
-            )
-        }
-    }
 }
