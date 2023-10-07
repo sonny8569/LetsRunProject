@@ -3,8 +3,10 @@ package com.sungil.runningproejct_mvvm.login.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sungil.runningproejct_mvvm.dataObject.LoginData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.database.entity.UserInfoDBM
+import com.sungil.database.entity.toDomainModel
+import com.sungil.device.entity.LoginData
+import com.sungil.runningproejct_mvvm.domain.entity.UserInfoData
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
@@ -34,7 +36,8 @@ class LoginViewModel @Inject constructor (private val repository: LoginRepositor
     override fun onMessageSuccess(data: ListenerMessage) {
         when(data.message){
             Define.PROP_SAVE_USERINFO ->{
-                val userInfo = data.data as UserInfoDBM
+                val userInfo = data.data as UserInfoData
+//                val userInfo = UserInfoData(data.data.id , data.data.password , data.data.phoneNumber , data.data.nickName)
                 repository.saveUserInfo(userInfo , this )
             }
             else -> _loginLiveData.setValue(LoginStatus.LoginSuccess(data.message))

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sungil.runningproejct_mvvm.dataObject.FirebasePostData
-import com.sungil.runningproejct_mvvm.dataObject.PostSnsBottomSheet
+import com.sungil.device.entity.FirebasePostData
+import com.sungil.device.entity.PostSnsBottomSheet
 import com.sungil.runningproejct_mvvm.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

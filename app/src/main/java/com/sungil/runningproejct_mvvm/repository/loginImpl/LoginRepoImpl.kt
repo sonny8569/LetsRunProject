@@ -9,9 +9,14 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.sungil.runningproejct_mvvm.R
-import com.sungil.runningproejct_mvvm.appDatabase.UserInfoDao
-import com.sungil.runningproejct_mvvm.dataObject.LoginData
-import com.sungil.runningproejct_mvvm.dataObject.UserInfoDBM
+import com.sungil.device.room.UserInfoDao
+import com.sungil.device.entity.LoginData
+import com.sungil.device.entity.UserInfoDBM
+import com.sungil.runningproejct_mvvm.domain.entity.UserInfoData
+import com.sungil.runningproejct_mvvm.domain.usecase.user.DeleteUserInfoUseCase
+import com.sungil.runningproejct_mvvm.domain.usecase.user.GetUserInfoUseCase
+import com.sungil.runningproejct_mvvm.domain.usecase.user.SaveUserinfoUseCase
+import com.sungil.runningproejct_mvvm.domain.usecase.user.UpdateUserInfoUseCase
 import com.sungil.runningproejct_mvvm.repository.LoginRepository
 import com.sungil.runningproejct_mvvm.utill.Define
 import com.sungil.runningproejct_mvvm.utill.ListenerMessage
@@ -22,32 +27,54 @@ import kotlin.Exception
 
 
 //로그인 Reop Hilt 주입
-class LoginRepoImpl @Inject constructor(private val context : Context,  private val userInfoDao: UserInfoDao ) : LoginRepository {
+class LoginRepoImpl @Inject constructor(
+    private val context: Context,
+    private val saveUserInfoUseCase: SaveUserinfoUseCase,
+    private val updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val deleteUserInfoUseCase: DeleteUserInfoUseCase,
+) : LoginRepository {
 
     private val database = Firebase.database(Define.FIREBASE_BASE_URL)
     private val userInfoURL = Define.FIREBASE_USERINFO_URL
     private val loginImplContext = context
-    private var userInfo : UserInfoDao = userInfoDao
-    override suspend fun requestCheckUserInfo(data: UserInfoDBM, Listener : RepositoryListener)  {
-        val myUserInfoUrl = userInfoURL+"/"+data.id
+    override suspend fun requestCheckUserInfo(data: UserInfoDBM, Listener: RepositoryListener) {
+        val myUserInfoUrl = userInfoURL + "/" + data.id
 
-        database.getReference(myUserInfoUrl).addListenerForSingleValueEvent(object  : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.getValue<UserInfoDBM>()
-                if(value == null){
-                    Timber.e("The User Data is Null")
+        database.getReference(myUserInfoUrl)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val value = snapshot.getValue<UserInfoDBM>()
+                    if (value == null) {
+                        Timber.e("The User Data is Null")
 //                    Listener.onMessageSuccess(ListenerMessage(data , Define.PROP_MESSAGE_SIGN_UP_OKAY))
-                    Listener.onMessageSuccess(ListenerMessage(data , loginImplContext.getString(R.string.msg_signup_okay)))
-                    return
+                        Listener.onMessageSuccess(
+                            ListenerMessage(
+                                data,
+                                loginImplContext.getString(R.string.msg_signup_okay)
+                            )
+                        )
+                        return
+                    }
+                    Timber.e("Already Sign Up")
+                    Listener.onMessageFail(
+                        ListenerMessage(
+                            null,
+                            loginImplContext.getString(R.string.msg_already_signup)
+                        )
+                    )
                 }
-                Timber.e("Already Sign Up")
-                Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_already_signup)))
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Timber.e("The Error to get UserInfo")
-                Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_network)))
-            }
-        })
+
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.e("The Error to get UserInfo")
+                    Listener.onMessageFail(
+                        ListenerMessage(
+                            null,
+                            loginImplContext.getString(R.string.msg_check_network)
+                        )
+                    )
+                }
+            })
     }
 
     override suspend fun requestSignUp(data: UserInfoDBM, Listener: RepositoryListener) {
@@ -57,55 +84,94 @@ class LoginRepoImpl @Inject constructor(private val context : Context,  private 
             DatabaseReference.CompletionListener { databaseError, databaseReference ->
                 if (databaseError != null) {
                     Timber.e("Data could not be saved ${databaseError.message}")
-                    Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_network)))
+                    Listener.onMessageFail(
+                        ListenerMessage(
+                            null,
+                            loginImplContext.getString(R.string.msg_check_network)
+                        )
+                    )
                     return@CompletionListener
                 }
                 Timber.d("Data saved successfully.")
-                Listener.onMessageSuccess(ListenerMessage(data  , loginImplContext.getString(R.string.msg_success_signup)))
+                Listener.onMessageSuccess(
+                    ListenerMessage(
+                        data,
+                        loginImplContext.getString(R.string.msg_success_signup)
+                    )
+                )
             })
     }
 
     override suspend fun requestLogin(data: LoginData, Listener: RepositoryListener) {
-        val myUserInfoUrl = Define.FIREBASE_USERINFO_URL+"/"+data.id
+        val myUserInfoUrl = Define.FIREBASE_USERINFO_URL + "/" + data.id
 
 
-        database.getReference(myUserInfoUrl).addListenerForSingleValueEvent(object  : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.getValue<UserInfoDBM>()
-                if(value == null){
-                    Timber.e("The User Data is Null")
-                    Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_login_data)))
-                    return
+        database.getReference(myUserInfoUrl)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val value = snapshot.getValue<UserInfoDBM>()
+                    if (value == null) {
+                        Timber.e("The User Data is Null")
+                        Listener.onMessageFail(
+                            ListenerMessage(
+                                null,
+                                loginImplContext.getString(R.string.msg_check_login_data)
+                            )
+                        )
+                        return
+                    }
+                    if (value.id == data.id && value.password == data.password) {
+                        val returnData = UserInfoData(value.id , value.password , value.phoneNumber ,value.nickName)
+                        Listener.onMessageSuccess(ListenerMessage(returnData, Define.PROP_SAVE_USERINFO))
+                        return
+                    }
+                    Listener.onMessageFail(
+                        ListenerMessage(
+                            null,
+                            loginImplContext.getString(R.string.msg_check_login_data)
+                        )
+                    )
                 }
-                if(value.id == data.id && value.password == data.password){
-                    Listener.onMessageSuccess(ListenerMessage(value  , Define.PROP_SAVE_USERINFO))
-                    return
+
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.e("The Error to get UserInfo")
+                    Listener.onMessageFail(
+                        ListenerMessage(
+                            null,
+                            loginImplContext.getString(R.string.msg_check_network)
+                        )
+                    )
                 }
-                Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_login_data)))
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Timber.e("The Error to get UserInfo")
-                Listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_check_network)))
-            }
-        })
+            })
     }
 
-    override fun saveUserInfo(data: UserInfoDBM, listener: RepositoryListener) {
-        try{
-            val userData = userInfo.getUserInfo()
-            if(userData == null){
-                userInfo.insert(data)
-            }else{
-                if(userData.id == data.id && userData.password == data.password){
-                    userInfo.update(data)
-                }else{
-                    userInfo.delete(userData)
-                    userInfo.insert(data)
+
+    override fun saveUserInfo(data: UserInfoData, listener: RepositoryListener) {
+        try {
+            val userData = getUserInfoUseCase.getUserInfo()
+            if (userData == null) {
+                saveUserInfoUseCase.saveUserInfo(data)
+            } else {
+                if (userData.id == data.id && userData.password == data.password) {
+                    updateUserInfoUseCase.updateUserInfo(data)
+                } else {
+                    deleteUserInfoUseCase.deleteUserInfo(userData)
+                    saveUserInfoUseCase.saveUserInfo(data)
                 }
             }
-            listener.onMessageSuccess(ListenerMessage(null  , loginImplContext.getString(R.string.msg_success_login)))
-        }catch (e : Exception){
-            listener.onMessageFail(ListenerMessage(null , loginImplContext.getString(R.string.msg_error_app)))
+            listener.onMessageSuccess(
+                ListenerMessage(
+                    null,
+                    loginImplContext.getString(R.string.msg_success_login)
+                )
+            )
+        } catch (e: Exception) {
+            listener.onMessageFail(
+                ListenerMessage(
+                    null,
+                    loginImplContext.getString(R.string.msg_error_app)
+                )
+            )
         }
     }
 }

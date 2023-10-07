@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.sungil.runningproejct_mvvm.activityRate.useCase.GetRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StartRunningRateUseCase
 import com.sungil.runningproejct_mvvm.activityRate.useCase.StopRunningRateUseCase
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,9 +41,13 @@ class RateViewModel @Inject constructor(
 
     fun stopRunningRate(distance: String) {
         viewModelScope.launch {
-            stopRunningRateUseCase.stopRunningRate()
+            val result = stopRunningRateUseCase.stopRunningRate()
+            if (result != com.sungil.runningproejct_mvvm.domain.usecase.rate.StopRunningRateUseCase.Result.Success) {
+               _liveData.postValue(ViewStatus.ViewError("error to save Running Data"))
+                return@launch
+            }
         }
-        stopRunningRateUseCase.saveRunningRate(distance)
+        stopRunningRateUseCase.saveRunningDistance(distance)
     }
 
     sealed class ViewStatus {

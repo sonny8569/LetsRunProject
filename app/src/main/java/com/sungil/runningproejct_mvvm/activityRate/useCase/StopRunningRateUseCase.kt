@@ -1,24 +1,18 @@
 package com.sungil.runningproejct_mvvm.activityRate.useCase
 
-import com.sungil.controller.repository.ControllerRepository
-import com.sungil.runningproejct_mvvm.appDatabase.RunningDao
-import com.sungil.runningproejct_mvvm.dataObject.WearRunDataDBM
+import com.sungil.runningproejct_mvvm.domain.usecase.rate.StopRunningRateUseCase
+
 import javax.inject.Inject
 
 class StopRunningRateUseCase @Inject constructor(
-    private val repository: ControllerRepository,
-    private val runningDao: RunningDao,
+    private val repository: StopRunningRateUseCase,
 ) {
-    suspend fun stopRunningRate() {
-        repository.stopGpsApi()
+    suspend fun stopRunningRate(): StopRunningRateUseCase.Result {
+        return repository.stopRunningRate()
     }
 
-    fun saveRunningRate(distance: String) {
-        val beforeData = runningDao.getRunningData()
-        if (beforeData == null) {
-            runningDao.insert(WearRunDataDBM(distance))
-            return
-        }
-        runningDao.update(WearRunDataDBM(distance))
+    fun saveRunningDistance(distance: String) {
+        repository.saveRunningRate(distance)
     }
+
 }
