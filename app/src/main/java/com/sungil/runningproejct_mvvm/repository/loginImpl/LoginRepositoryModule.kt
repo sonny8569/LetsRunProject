@@ -21,19 +21,9 @@ object LoginRepositoryModule {
     @Provides
     @Singleton
     fun provideLoginRepository(
-        @ApplicationContext context: Context,
-        saveUserinfoUseCase: SaveUserinfoUseCase,
-        updateUserinfoUseCase: UpdateUserInfoUseCase,
-        getUserInfoUseCase: GetUserInfoUseCase,
-        deleteUserInfoUseCase : DeleteUserInfoUseCase
+        @ApplicationContext context: Context
     ): LoginRepository {
-        return LoginRepoImpl(
-            context,
-            saveUserinfoUseCase,
-            updateUserinfoUseCase,
-            getUserInfoUseCase,
-            deleteUserInfoUseCase
-        )
+        return LoginRepoImpl(context)
     }
 
 }
