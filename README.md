@@ -6,9 +6,9 @@
 ## Language : Kotlin 
 
 > 안녕하세요 Android 개발자 Sonny8569 입니다 
-> 해당 Project 은 제가 F-Lab을 수강할 당시 만든 프로젝트 입니다 
-> Android Native API 은 GPS 을 사용했습니다 
-> 멘토님은 Nathan 님이시며 멘토링 바탕으로 제가 개발을 했습니다 
+>> 해당 Project 은 제가 F-Lab을 수강할 당시 만든 프로젝트 입니다 
+>> Android Native API 은 GPS 을 사용했습니다 
+>>멘토님은 Nathan 님이시며 멘토링 바탕으로 제가 개발을 했습니다 
 > 해당 Project 은 Clean Architecture 바탕으로 만들었습니다 
 > app은 Firebase Realtime Database 에 조회 하는 기능을 담당 합니다
 > Device 은 GPS 기반으로 위도 경도 값을 계산하여 거리 값을 계산합니다
